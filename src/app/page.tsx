@@ -1,6 +1,6 @@
 'use client';
 import React, { useMemo, useState } from 'react';
-import { Location, FoodPrint, District } from '@/types/types';
+
 import MapComponent from "../components/maps/MapComponent";
 import { LocationData } from '@/data/LocationData';
 import { districts } from '@/data/DistrictCoordinatesData';
@@ -43,8 +43,8 @@ const MapPage = () => {
         mapBounds={mapBounds}
         defaultZoom={0}
         isDesktop={true}
-        onLocationClick={(loc: any) => console.log('Clicked location', loc)}
-        onFoodPrintClick={(fp: any) => console.log('Clicked food print', fp)}
+        onLocationClick={(loc) => console.log('Clicked location', loc)}
+        onFoodPrintClick={(fp) => console.log('Clicked food print', fp)}
         mapStyle="mapbox://styles/mapbox/light-v10"
         useCustomMap={true}
         mapImageUrl="/images/map/Map.webp"

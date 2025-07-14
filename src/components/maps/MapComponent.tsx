@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../../../styles/map.css';
@@ -116,7 +116,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
     return el;
   };
 
-
   const getImageCoordinates = (
     mapBounds: [[number, number], [number, number]]
   ): [number, number][] => {
@@ -179,14 +178,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         bounds.extend([lng, lat]);
       });
 
-      const sw = bounds.getSouthWest();
-      const ne = bounds.getNorthEast();
-      const lngPad = Math.abs(ne.lng - sw.lng) * 0.2;
-      const latPad = Math.abs(ne.lat - sw.lat) * 0.2;
-      const expandedBounds = new mapboxgl.LngLatBounds(
-        [sw.lng - lngPad, sw.lat - latPad],
-        [ne.lng + lngPad, ne.lat + latPad]
-      );
+      // const sw = bounds.getSouthWest();
+      // const ne = bounds.getNorthEast();
+      // const lngPad = Math.abs(ne.lng - sw.lng) * 0.2;
+      // const latPad = Math.abs(ne.lat - sw.lat) * 0.2;
+      // const expandedBounds = new mapboxgl.LngLatBounds(
+      //   [sw.lng - lngPad, sw.lat - latPad],
+      //   [ne.lng + lngPad, ne.lat + latPad]
+      // );
 
       locations.forEach((loc) => {
         if (!isValidCoord(loc)) return;
@@ -248,7 +247,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       foodPrintMarkers,
       districts,
       mapBounds,
-      defaultZoom,
+      // defaultZoom,
       onLocationClick,
       onFoodPrintClick,
       isDesktop,
@@ -304,18 +303,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
           });
       } else {
         updateMarkers(map);
-    
+
         if (!hasFitBoundsRef.current) {
           const allValidPoints = [
             ...locations.filter(isValidCoord),
             ...foodPrintMarkers.filter(isValidCoord),
           ];
-    
+
           const bounds = new mapboxgl.LngLatBounds();
           allValidPoints.forEach((p) => {
             bounds.extend(xyToLngLat(p.x, p.y, mapBounds));
           });
-    
+
           const sw = bounds.getSouthWest();
           const ne = bounds.getNorthEast();
           const lngPad = Math.abs(ne.lng - sw.lng) * 0.2;
@@ -324,7 +323,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
             [sw.lng - lngPad, sw.lat - latPad],
             [ne.lng + lngPad, ne.lat + latPad]
           );
-    
+
           try {
             map.fitBounds(expandedBounds, {
               padding: 100,
@@ -335,11 +334,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
             console.warn('Failed to fit bounds', err);
           }
         }
-    
+
         onMapLoaded?.(); // ✅ Called when using Mapbox styles
       }
     });
-    
 
     map.on('zoom', () => {
       const zoom = map.getZoom();
@@ -356,6 +354,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
     isDesktop,
     addCustomImageLayer,
     updateMarkers,
+    foodPrintMarkers,
+    locations,
+    mapBounds,
+    onMapLoaded, 
   ]);
 
   useEffect(() => {
@@ -371,9 +373,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
     };
   }, [initializeMap]);
 
-  useEffect(() => {
-  }, [locations, foodPrintMarkers]);
+  useEffect(() => {}, [locations, foodPrintMarkers]);
 
   return <div ref={mapContainerRef} className="map-container w-full h-full" />;
 };
-export default MapComponent
+export default MapComponent;
