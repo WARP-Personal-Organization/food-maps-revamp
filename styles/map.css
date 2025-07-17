@@ -175,30 +175,3 @@
   }
 }
 /* All markers initially hidden and offscreen */
-.map-container .marker-animate {
-  opacity: 0;
-  transform: translateY(-200px) scale(0.9);
-}
-
-/* Animate markers only when map is ready */
-.map-container.map-loaded .marker-animate {
-  animation: fall-from-top 0.7s ease-out forwards;
-}
-
-/* Keyframes for "fall from sky" effect */
-@keyframes fall-from-top {
-  0% {
-    opacity: 0;
-    transform: translateY(-200px) scale(0.9);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(10px) scale(1.05);
-  }
-  80% {
-    transform: translateY(-5px) scale(0.98);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-  }
-}
