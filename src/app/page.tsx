@@ -1,36 +1,26 @@
-"use client";
+'use client';
 
-import React, { useMemo, useState } from "react";
-import MapComponent from "../components/maps/MapComponent";
-import FoodPrintSummaryPanel from "../components/panel/FoodPrintSummaryPanel.tsx";
-import LocationDetailPanel from "@/components/panel/LocationDetailPanel";
-import FilterPanel from "@/components/panel/FilterPanel";
+import React, { useMemo, useState } from 'react';
+import MapComponent from '../components/maps/MapComponent';
+import FoodPrintSummaryPanel from '../components/panel/FoodPrintSummaryPanel.tsx';
+import LocationDetailPanel from '@/components/panel/LocationDetailPanel';
+import FilterPanel from '@/components/panel/FilterPanel';
 
 // import { LocationData } from "@/data/LocationData";
-import { FoodPrintData } from "@/data/FoodPrintData";
-import { DishData } from "@/data/dish";
-import { districts } from "@/data/DistrictCoordinatesData";
+import { FoodPrintData } from '@/data/FoodPrintData';
+import { DishData } from '@/data/dish';
+import { districts } from '@/data/DistrictCoordinatesData';
 
-import { FoodPrint, Location } from "@/types/types";
-
-/* ──────────────────────────────────────────────────────────────────────────── */
+import { FoodPrint, Location } from '@/types/types';
+import { LocationData } from '@/data/LocationData';
 
 const MapPage = () => {
   const [loading, setLoading] = useState(true);
 
-  /* ────────── map data ───────── */
-  // const allLocations = useMemo(() => Object.values(LocationData).flat(), []);
-  const foodprints = useMemo(
-    () => Object.values(FoodPrintData).flat() as FoodPrint[],
-    []
-  );
+  const foodprints = useMemo(() => Object.values(FoodPrintData).flat() as FoodPrint[], []);
 
-  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(
-    null
-  );
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
-  );
+  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
 
   const [showFoodPrintPanel, setShowFoodPrintPanel] = useState(false);
   const [showLocationPanel, setShowLocationPanel] = useState(false);
@@ -43,10 +33,24 @@ const MapPage = () => {
     [1000, 1000],
   ];
 
-  /* ======================================================================== */
+  const filteredLocations =
+    selectedDishes.length === 0
+      ? []
+      : selectedDishes.flatMap((dishName) => {
+          const dish = DishData.find((d) => d.name === dishName);
+          return dish?.locations || [];
+        });
+
+  const filteredFoodPrints: FoodPrint[] = useMemo(() => {
+    const allFoodPrints = Object.values(FoodPrintData).flat() as FoodPrint[];
+
+    if (selectedDishes.length === 0) return allFoodPrints;
+
+    return allFoodPrints.filter((fp) => selectedDishes.includes(fp.dishType));
+  }, [selectedDishes]);
+
   return (
     <div className="relative h-screen w-full">
-      {/* ── Food-print panel (desktop left-side slide-in) ─────────────────── */}
       <FoodPrintSummaryPanel
         selectedFoodPrint={selectedFoodPrint}
         isVisible={showFoodPrintPanel}
@@ -64,11 +68,10 @@ const MapPage = () => {
           setSelectedLocation(null);
         }}
         onViewDetails={() => {
-          console.log("TODO: navigate to full location page");
+          console.log('TODO: navigate to full location page');
         }}
       />
 
-      {/* ── Dish filter panel ─────────────────────────────────────────────── */}
       <FilterPanel
         dishData={DishData}
         initialSelectedDishes={selectedDishes}
@@ -76,7 +79,7 @@ const MapPage = () => {
         onClose={() => setShowFilterPanel(false)}
         onFilterApply={(filters) => {
           setSelectedDishes(filters);
-          console.log("Applied Filters:", filters);
+          console.log('Applied Filters:', filters);
         }}
       />
 
@@ -88,25 +91,22 @@ const MapPage = () => {
         Filter Dishes
       </button>
 
-      {/* ── loading veil ──────────────────────────────────────────────────── */}
       {loading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60">
           <p className="text-white text-lg animate-pulse">Loading map…</p>
         </div>
       )}
 
-      {/* ── MAP ───────────────────────────────────────────────────────────── */}
       <MapComponent
-        /* data */
-        locations={[]}
-        foodPrintMarkers={foodprints}
+     
+        locations={filteredLocations}
+        foodPrintMarkers={filteredFoodPrints}
         districts={districts}
         mapBounds={mapBounds}
         mapImageUrl="/images/map/Map.webp"
         defaultZoom={0}
         useCustomMap
         isDesktop
-        /* interactions */
         onFoodPrintClick={(fp) => {
           setSelectedFoodPrint(fp);
           setShowFoodPrintPanel(true);
@@ -115,7 +115,6 @@ const MapPage = () => {
           setSelectedLocation(loc);
           setShowLocationPanel(true);
         }}
-        /* misc */
         mapStyle="mapbox://styles/mapbox/light-v10"
         onMapLoaded={() => setLoading(false)}
       />

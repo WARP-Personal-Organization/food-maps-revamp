@@ -54,7 +54,7 @@ export type FoodPrint = {
   description: string;
   extendedDescription: string[];
   iconUrl: string;
-  dishType: DishType;
+  dishType: string;
   heroImage: string;
   mapLink: string;
 };
