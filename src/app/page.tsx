@@ -13,6 +13,7 @@ import { districts } from '@/data/DistrictCoordinatesData';
 
 import { FoodPrint, Location } from '@/types/types';
 import { LocationData } from '@/data/LocationData';
+import FlipPage from '@/components/loading/pagecurl';
 
 const MapPage = () => {
   const [loading, setLoading] = useState(true);
@@ -98,7 +99,6 @@ const MapPage = () => {
       )}
 
       <MapComponent
-     
         locations={filteredLocations}
         foodPrintMarkers={filteredFoodPrints}
         districts={districts}

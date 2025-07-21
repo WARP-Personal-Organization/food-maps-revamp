@@ -2,7 +2,6 @@ import React from "react";
 import { Location } from "@/types/types";
 import { LocationData } from "@/lib/LocationData";
 import CloseButton from "@/components/buttons/CloseButton";
-import { denormalizeKey } from "@/lib/utils";
 import { MapPin, Search, X, Compass } from "lucide-react";
 import Image from "next/image";
 interface ExplorePanelProps {
