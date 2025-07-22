@@ -61,10 +61,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 )}
 
 <div
-  className={`fixed top-0 left-0 h-full w-full sm:w-5/6 md:w-2/3 lg:w-1/2 xl:w-[400px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-out
+  className={`fixed top-0 left-0 h-full w-full md:w-[400px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-out
     ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"} flex flex-col`}
 >
-
 
         {/* Enhanced Header */}
         <div className="bg-gradient-to-r p-4 sm:p-6">

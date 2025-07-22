@@ -1,26 +1,36 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState } from 'react';
-import MapComponent from '../components/maps/MapComponent';
-import FoodPrintSummaryPanel from '../components/panel/FoodPrintSummaryPanel.tsx';
-import LocationDetailPanel from '@/components/panel/LocationDetailPanel';
-import FilterPanel from '@/components/panel/FilterPanel';
-
+import React, { useMemo, useState } from "react";
+import MapComponent from "../components/maps/MapComponent";
+import FoodPrintSummaryPanel from "../components/panel/FoodPrintSummaryPanel.tsx";
+import LocationDetailPanel from "@/components/panel/LocationDetailPanel";
+import FilterPanel from "@/components/panel/FilterPanel";
+import ExplorePanel from "@/components/panel/ExplorePanel";
 // import { LocationData } from "@/data/LocationData";
-import { FoodPrintData } from '@/data/FoodPrintData';
-import { DishData } from '@/data/dish';
-import { districts } from '@/data/DistrictCoordinatesData';
+import { FoodPrintData } from "@/data/FoodPrintData";
+import { DishData } from "@/data/dish";
+import { districts } from "@/data/DistrictCoordinatesData";
+import MenuPanel from "@/components/panel/MenuPanel";
+import { FoodPrint, Location } from "@/types/types";
+import MenuButton from "@/components/buttons/MenuButton";
+import FilterButton from "@/components/buttons/filterbutton";
+import AboutPanel from "@/components/panel/AboutPanel";
 
-import { FoodPrint, Location } from '@/types/types';
-import { LocationData } from '@/data/LocationData';
+// import { LocationData } from '@/data/LocationData';
 
 const MapPage = () => {
   const [loading, setLoading] = useState(true);
+  const [showExplorePanel, setShowExplorePanel] = useState(false);
+  const [isAboutVisible, setIsAboutVisible] = useState(false);
+  // const foodprints = useMemo(() => Object.values(FoodPrintData).flat() as FoodPrint[], []);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  const foodprints = useMemo(() => Object.values(FoodPrintData).flat() as FoodPrint[], []);
-
-  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(
+    null
+  );
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null
+  );
 
   const [showFoodPrintPanel, setShowFoodPrintPanel] = useState(false);
   const [showLocationPanel, setShowLocationPanel] = useState(false);
@@ -59,7 +69,11 @@ const MapPage = () => {
           setSelectedFoodPrint(null);
         }}
       />
-
+      <AboutPanel
+        isVisible={isAboutVisible}
+        onClose={() => setIsAboutVisible(false)}
+      />
+      <MenuButton onClick={() => setIsMenuVisible(true)} />
       <LocationDetailPanel
         location={selectedLocation}
         isVisible={showLocationPanel}
@@ -68,7 +82,7 @@ const MapPage = () => {
           setSelectedLocation(null);
         }}
         onViewDetails={() => {
-          console.log('TODO: navigate to full location page');
+          console.log("TODO: navigate to full location page");
         }}
       />
 
@@ -79,26 +93,45 @@ const MapPage = () => {
         onClose={() => setShowFilterPanel(false)}
         onFilterApply={(filters) => {
           setSelectedDishes(filters);
-          console.log('Applied Filters:', filters);
+          setShowExplorePanel(true);
+          console.log("Applied Filters:", filters);
         }}
       />
 
-      {/* quick button just to open the filter panel */}
-      <button
-        onClick={() => setShowFilterPanel(true)}
-        className="absolute top-4 left-4 z-[45] bg-yellow-400 text-black font-bold px-4 py-2 rounded-xl shadow"
-      >
-        Filter Dishes
-      </button>
-
+      <FilterButton onClick={() => setShowFilterPanel(true)} />
       {loading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60">
           <p className="text-white text-lg animate-pulse">Loading map…</p>
         </div>
       )}
-
+      <ExplorePanel
+        activeFilters={selectedDishes}
+        isVisible={showExplorePanel}
+        onClose={() => setShowExplorePanel(false)}
+        onFilterChange={(filters) => {
+          setSelectedDishes(filters);
+          if (filters.length === 0) {
+            setShowExplorePanel(false);
+          }
+        }}
+      />
+      <MenuPanel
+        isVisible={isMenuVisible}
+        onClose={() => setIsMenuVisible(false)}
+        onOpenHome={() => {
+          console.log("Home clicked");
+          setIsMenuVisible(false);
+        }}
+        onOpenAbout={() => {
+          setIsAboutVisible(true);
+          setIsMenuVisible(false);
+        }}
+      />
+      <AboutPanel
+        isVisible={isAboutVisible}
+        onClose={() => setIsAboutVisible(false)}
+      />
       <MapComponent
-     
         locations={filteredLocations}
         foodPrintMarkers={filteredFoodPrints}
         districts={districts}

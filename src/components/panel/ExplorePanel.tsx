@@ -1,8 +1,7 @@
 import React from "react";
 import { Location } from "@/types/types";
-import { LocationData } from "@/lib/LocationData";
-import CloseButton from "@/components/buttons/CloseButton";
-import { denormalizeKey } from "@/lib/utils";
+import { LocationData } from "@/data/LocationData";
+import CloseButton from "../buttons/closeButton";
 import { MapPin, Search, X, Compass } from "lucide-react";
 import Image from "next/image";
 interface ExplorePanelProps {
@@ -61,7 +60,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
                 <p className="text-sm text-gray-600">Discover local spots</p>
               </div>
             </div>
-        <CloseButton
+            <CloseButton
               onClick={onClose}
               className="p-2 hover:bg-white/80 rounded-full transition-all duration-300 shadow-sm touch-manipulation"
             />
@@ -108,7 +107,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
                   key={filter}
                   className="bg-yellow-300 hover:bg-yellow-400 rounded-full px-4 py-2 text-gray-900 font-semibold flex items-center gap-2 text-sm shadow-sm transition-all duration-300"
                 >
-                  <span>{denormalizeKey(filter)}</span>
+                  <span>{filter}</span>
                   <button
                     onClick={() => removeFilter(filter)}
                     className="w-4 h-4 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-colors duration-300"
@@ -187,7 +186,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
                                 key={tag}
                                 className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-medium"
                               >
-                                {denormalizeKey(tag)}
+                                {tag}
                               </span>
                             ))}
                         </div>
