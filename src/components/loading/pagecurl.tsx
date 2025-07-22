@@ -1,131 +1,139 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
-import { shaderMaterial } from '@react-three/drei';
-import glsl from 'babel-plugin-glsl/macro';
+import React, { useRef, useEffect, useState } from 'react';
+import HTMLFlipBook from 'react-pageflip';
+import Image from 'next/image';
 
-// Custom ShaderMaterial with curl effect
-const PageCurlMaterial = shaderMaterial(
-  {
-    iResolution: new THREE.Vector2(),
-    iMouse: new THREE.Vector4(),
-    iChannel0: null,
-    iChannel1: null,
-    time: 0,
-  },
-  glsl`
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  glsl`
-    #define pi 3.14159265359
-    #define radius .1
+const FlipPage = () => {
+  const bookRef = useRef<any>(null);
+  const [bookSize, setBookSize] = useState({ width: 0, height: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [loadingText, setLoadingText] = useState<string>(
+    'Cooking up something special just for you...'
+  );
 
-    uniform vec2 iResolution;
-    uniform vec4 iMouse;
-    uniform sampler2D iChannel0;
-    uniform sampler2D iChannel1;
-    uniform float time;
-
-    varying vec2 vUv;
-
-    void main() {
-      float aspect = iResolution.x / iResolution.y;
-      vec2 uv = vUv * vec2(aspect, 1.0);
-      vec2 mouse = iMouse.xy * vec2(aspect, 1.0);
-      vec2 mouseDir = normalize(abs(iMouse.zw) - iMouse.xy);
-      vec2 origin = clamp(mouse - mouseDir * mouse.x / mouseDir.x, 0.0, 1.0);
-
-      float mouseDist = clamp(length(mouse - origin) + (aspect - (abs(iMouse.z) / iResolution.x) * aspect) / mouseDir.x, 0.0, aspect / mouseDir.x);
-
-      if (mouseDir.x < 0.0) {
-        mouseDist = distance(mouse, origin);
-      }
-
-      float proj = dot(uv - origin, mouseDir);
-      float dist = proj - mouseDist;
-      vec2 linePoint = uv - dist * mouseDir;
-
-      vec4 color;
-      if (dist > radius) {
-        color = texture2D(iChannel1, vUv);
-        color.rgb *= pow(clamp(dist - radius, 0.0, 1.0) * 1.5, 0.2);
-      } else if (dist >= 0.0) {
-        float theta = asin(dist / radius);
-        vec2 p2 = linePoint + mouseDir * (pi - theta) * radius;
-        vec2 p1 = linePoint + mouseDir * theta * radius;
-        uv = (p2.x <= aspect && p2.y <= 1. && p2.x > 0. && p2.y > 0.) ? p2 : p1;
-        color = texture2D(iChannel0, uv);
-        color.rgb *= pow(clamp((radius - dist) / radius, 0.0, 1.0), 0.2);
-      } else {
-        vec2 p = linePoint + mouseDir * (abs(dist) + pi * radius);
-        uv = (p.x <= aspect && p.y <= 1. && p.x > 0. && p.y > 0.) ? p : uv;
-        color = texture2D(iChannel0, uv);
-      }
-
-      gl_FragColor = color;
-    }
-  `
-);
-
-// Register shader material as JSX component
-extend({ PageCurlMaterial });
-
-function Plane() {
-  const ref = useRef<THREE.ShaderMaterial>(null);
-  const { size } = useThree();
-  const [texture0, setTexture0] = useState<THREE.Texture | null>(null);
-  const [texture1, setTexture1] = useState<THREE.Texture | null>(null);
-
+  // Responsive book sizing
   useEffect(() => {
-    const loader = new THREE.TextureLoader();
-    loader.load('/images/map/foodprint-splash.png', setTexture0);
-    loader.load('/images/map/Map.webp', setTexture1);
+    const updateSize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 768);
+      setBookSize({ width, height });
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.uniforms.time.value = clock.getElapsedTime();
-      ref.current.uniforms.iResolution.value.set(size.width, size.height);
-      ref.current.uniforms.iMouse.value.set(0.5, 0.5, 0.6, 0.4); // mock interaction
-    }
-  });
-
-  if (!texture0 || !texture1) return null;
-
-  return (
-    <mesh>
-      <planeGeometry args={[2, 2]} />
-      {/* @ts-ignore: because TypeScript doesn't know this custom tag */}
-      <pageCurlMaterial ref={ref} iChannel0={texture0} iChannel1={texture1} />
-    </mesh>
-  );
-}
-
-type PageTransitionProps = {
-  onComplete: () => void;
-};
-
-const PageTransition = ({ onComplete }: PageTransitionProps) => {
+  // Simulate loading and auto flip page
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      onComplete();
-    }, 3000); // adjust timing as needed
-    return () => clearTimeout(timeout);
-  }, [onComplete]);
+    const loadingTimer = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(loadingTimer);
+          // After loading, trigger flip
+          setTimeout(() => {
+            bookRef.current?.pageFlip()?.flipNext();
+          }, 500);
+        }
+        return Math.min(prev + 1, 100);
+      });
+    }, 25);
+
+    return () => clearInterval(loadingTimer);
+  }, []);
+
+  // Text transition
+  useEffect(() => {
+    const textSequences: string[] = [
+      'Serving in 3, 2, 1...',
+      'Finding food spots...',
+      'Mapping delicious locations...',
+      'Almost ready...',
+      'Cooking up something special just for you...',
+    ];
+    const textIndex = Math.floor((loadingProgress / 250) * textSequences.length);
+    setLoadingText(textSequences[Math.min(textIndex, textSequences.length - 1)]);
+  }, [loadingProgress]);
 
   return (
-    <div className="fixed inset-0 z-50">
-      <Canvas gl={{ preserveDrawingBuffer: true }}>
-        <Plane />
-      </Canvas>
+    <div className="fixed top-0 left-0 w-screen h-screen bg-yellow-400 z-50 overflow-hidden">
+      <HTMLFlipBook
+        ref={bookRef}
+        swipeDistance={1}
+        showPageCorners={false}
+        disableFlipByClick={true}
+        width={bookSize.width}
+        height={bookSize.height}
+        size="fixed"
+        minWidth={320}
+        maxWidth={1920}
+        minHeight={500}
+        maxHeight={2000}
+        startPage={0}
+        flippingTime={1000}
+        drawShadow={false}
+        showCover={false}
+        mobileScrollSupport={false}
+        usePortrait={true}
+        useMouseEvents={true}
+        startZIndex={0}
+        autoSize={true}
+        maxShadowOpacity={0.5}
+        clickEventForward={true}
+        className="z-10"
+        style={{ width: '100%', height: '100%' }}
+      >
+        {/* Page 1 - Loading screen */}
+        <div className="fixed inset-0 z-40 overflow-hidden bg-white">
+          {/* Background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/images/DGBG.png')" }}
+          />
+
+          {/* Logo */}
+          <div className="absolute top-[7%] left-1/2 transform -translate-x-1/2 z-10 w-40 md:w-48">
+            <Image
+              src="/images/DGLogo.png"
+              alt="Daily Guardian Logo"
+              layout="responsive"
+              width={180}
+              height={60}
+              objectFit="contain"
+              priority
+            />
+          </div>
+
+          {/* Main content */}
+          <div className="relative flex flex-col items-center justify-center h-full z-10 px-4 space-y-4">
+            <div className="w-80 h-auto md:w-[500px] lg:w-[600px]">
+              <Image
+                src="/images/food-prints.png"
+                alt="Foodprints Logo"
+                layout="responsive"
+                width={600}
+                height={200}
+                objectFit="contain"
+                priority
+              />
+            </div>
+          </div>
+
+          <div className="absolute bottom-[15%] w-full flex flex-col items-center z-10">
+            <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mb-2" />
+            <p className="text-black text-sm">{loadingText}</p>
+          </div>
+        </div>
+
+        <div className="w-full h-full bg-white flex items-center justify-center text-2xl font-bold text-black">
+          Welcome to the experience!
+        </div>
+      </HTMLFlipBook>
     </div>
   );
 };
 
-export default PageTransition;
+export default FlipPage;
