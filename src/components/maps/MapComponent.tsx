@@ -66,6 +66,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const popupRef = useRef<mapboxgl.Popup | null>(null);
   const mapInitializedRef = useRef<boolean>(false);
+  // Store dynamic dependencies in refs to avoid re-renders
+
   const customMapSourceId = useMemo(() => "custom-map-layer", []);
 
   const hasFitBoundsRef = useRef(false);
@@ -233,11 +235,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
         const el = document.createElement("div");
         el.className = "custom-marker area-label-marker";
         const fontSize = isDesktop ? "text-3xl" : "text-base";
+
         el.innerHTML = `
-        <span class="text-white font-extrabold ${fontSize} select-none pointer-events-none drop-shadow-lg opacity-80">
-          ${d.name}
-        </span>
-      `;
+    <span class="text-white font-extrabold ${fontSize} select-none pointer-events-none opacity-90"
+      style="text-shadow:
+        -1px -1px 0 #000,
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000;">
+      ${d.name}
+    </span>
+  `;
         const [lng, lat] = xyToLngLat(d.x, d.y, mapBounds);
         const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
           .setLngLat([lng, lat])
@@ -301,11 +309,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
         addCustomImageLayer(map)
           .then(() => {
             updateMarkers(map);
-            onMapLoaded?.(); // ✅ Call when custom image + markers are loaded
+            onMapLoaded?.();
           })
           .catch(() => {
             updateMarkers(map);
-            onMapLoaded?.(); // ✅ Still call even on failure
+            onMapLoaded?.();
           });
       } else {
         updateMarkers(map);
@@ -341,7 +349,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
           }
         }
 
-        onMapLoaded?.(); // ✅ Called when using Mapbox styles
+        onMapLoaded?.();
       }
     });
 
@@ -353,17 +361,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
     map.on("rotate", () => map.setBearing(0));
     map.on("pitch", () => map.setPitch(0));
   }, [
-    mapboxToken,
-    mapStyle,
-    useCustomMap,
-    defaultZoom,
-    isDesktop,
     addCustomImageLayer,
-    updateMarkers,
+    defaultZoom,
     foodPrintMarkers,
+    isDesktop,
     locations,
     mapBounds,
+    mapStyle,
+    mapboxToken,
     onMapLoaded,
+    updateMarkers,
+    useCustomMap,
   ]);
 
   useEffect(() => {
@@ -377,7 +385,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
         mapInitializedRef.current = false;
       }
     };
-  }, [initializeMap]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!mapInitializedRef.current || !mapInstanceRef.current) return;
+    updateMarkers(mapInstanceRef.current);
+  }, [locations, foodPrintMarkers, districts, updateMarkers]);
 
   useEffect(() => {}, [locations, foodPrintMarkers]);
 
