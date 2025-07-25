@@ -1,16 +1,15 @@
-
 export type PanelType =
-| "dishDetails"
-| "menu"
-| "filter"
-| "about"
-| "locationSummary"
-| "locationDetail"
-| "foodPrintSummary"
-| "foodPrintDetail"
-| "explore"
-| "home"
-| null;
+  | 'dishDetails'
+  | 'menu'
+  | 'filter'
+  | 'about'
+  | 'locationSummary'
+  | 'locationDetail'
+  | 'foodPrintSummary'
+  | 'foodPrintDetail'
+  | 'explore'
+  | 'home'
+  | null;
 
 // Used in home and filter panels
 export type Dish = {
@@ -34,7 +33,7 @@ export type Location = {
   mapLink: string;
   photos: string[];
   menuPhotos?: string[];
-  foodPhotos?:string[]
+  foodPhotos?: string[];
   iconUrl: string;
 };
 
@@ -54,7 +53,7 @@ export type FoodPrint = {
   description: string;
   extendedDescription: string[];
   iconUrl: string;
-  dishType: string;
+  dishType: DishType;
   heroImage: string;
   mapLink: string;
 };
