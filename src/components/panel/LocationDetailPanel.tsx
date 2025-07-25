@@ -1,28 +1,55 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Location } from '@/types/types';
 import { MapPin, Tag } from 'lucide-react';
-import GetDirectionsButton from '../../components/buttons/getDirectionsButton';
-import CloseButton from '../../components/buttons/closeButton';
+import GetDirectionsButton from '@/components/buttons/getDirectionsButton';
+import CloseButton from '@/components/buttons/closeButton';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LocationSummaryPanelProps {
   location: Location | null;
+  locationKey: string;
   isVisible: boolean;
   onClose: () => void;
   onViewDetails: () => void;
 }
 
+const fallbackImageMap: Record<string, string> = {
+  Siopao: '/images/fallback-images/siopao.png',
+  Batchoy: '/images/fallback-images/batchoy.png',
+  Cansi: '/images/fallback-images/cansi.png',
+  'Chicken Inasal': '/images/fallback-images/inasal.png',
+  KBL: '/images/fallback-images/kbl.png',
+  'Pancit Molo': '/images/fallback-images/pancit_molo.png',
+  Seafood: '/images/fallback-images/seafood.png',
+};
+
 const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
   location,
+  locationKey,
   onClose,
   isVisible,
 }) => {
+  console.log('LocationSummaryPanel locationKey:', locationKey);
   const [activeTab, setActiveTab] = useState<'photos' | 'menu'>('photos');
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imgSrc, setImgSrc] = useState('');
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  useEffect(() => {
+    if (location) {
+      setImgSrc(
+        location.photos &&
+          location.photos.length > 0 &&
+          location.photos[0] &&
+          location.photos[0].trim() !== ''
+          ? location.photos[0]
+          : fallbackImageMap[locationKey] || '/images/fallback-images/siopao.png'
+      );
+    }
+  }, [location, locationKey]);
 
   // Drag-to-close state and handlers (from FoodPrintSummaryPanel)
   const panelRef = useRef<HTMLDivElement>(null);
@@ -40,7 +67,10 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
   const openHours = location.openHours;
   const priceRange = location.priceRange;
 
-  const photosToShow = activeTab === 'menu' ? location.menuPhotos : location.photos;
+  const photosToShow =
+    activeTab === 'menu' && location.menuPhotos && location.menuPhotos.length > 0
+      ? location.menuPhotos
+      : location.photos;
 
   // Navigation handlers
   const handleImageClick = (photo: string, index: number) => {
@@ -88,7 +118,6 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     setLastDragTime(Date.now());
     setLastDragY(clientY);
   };
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const handleDragEnd = () => {
     document.body.style.overflow = '';
@@ -127,9 +156,8 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
 
   return (
     <>
-      {/* Overlay to block map interaction when panel is open */}
       {isVisible && (
-        <div className="fixed inset-0 z-40 bg-transparent pointer-events-none" aria-hidden="true" /> 
+        <div className="fixed inset-0 z-40 bg-transparent pointer-events-none" aria-hidden="true" />
       )}
       <AnimatePresence mode="wait">
         {isVisible && (
@@ -159,13 +187,13 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
               duration: 0.5,
             }}
             className={`
-           fixed bg-white z-50 shadow-2xl overflow-hidden
-           ${
-             isMobile
-               ? 'bottom-0 left-0 right-0 w-full h-[80vh] rounded-t-3xl'
-               : 'top-0 left-0 bottom-0 h-full w-[350px] min-w-[300px] max-w-[400px] rounded-none'
-           }
-         `}
+       fixed bg-white z-50 shadow-2xl overflow-hidden
+       ${
+         isMobile
+           ? 'bottom-0 left-0 right-0 w-full h-[80vh] rounded-t-3xl'
+           : 'top-0 left-0 bottom-0 h-full w-[350px] min-w-[300px] max-w-[400px] rounded-none'
+       }
+     `}
             style={{
               transform: isMobile ? `translateY(${isVisible ? dragOffset : 0}px)` : undefined,
               transition:
@@ -303,14 +331,23 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
             <div className="h-full overflow-y-auto scrollbar-hide">
               {/* Header Image */}
               <div className="relative w-full flex-shrink-0" style={{ height: '45vh' }}>
-                <Image
-                  src={location.photos?.[0]}
-                  alt={`${location.name} Image`}
-                  layout="fill"
-                  objectFit="cover"
-                  fill
-                  className="z-10 transition-transform duration-700 hover:scale-105"
-                />
+                {imgSrc && (
+                  <Image
+                    src={imgSrc}
+                    alt={`${location.name} Image`}
+                    layout="fill"
+                    objectFit="cover"
+                    fill
+                    className="z-10 transition-transform duration-700 hover:scale-105"
+                    onError={() => {
+                      if (imgSrc !== fallbackImageMap[locationKey]) {
+                        setImgSrc(
+                          fallbackImageMap[locationKey] || '/images/fallback-images/siopao.png'
+                        );
+                      }
+                    }}
+                  />
+                )}
                 {/* Subtle gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-20" />
               </div>
@@ -325,7 +362,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
                 <h1 className="text-4xl font-black text-gray-900 leading-tight">{location.name}</h1>
 
                 {/* Enhanced info cards */}
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {[
                     {
                       icon: <MapPin className="h-5 w-5 text-white" />,
@@ -377,7 +414,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
                 </div>
 
                 {/* Enhanced Tabs */}
-                <div className="mt-6">
+                <div className="mt-2">
                   <div className="flex bg-gray-100 rounded-2xl p-1">
                     {['photos', 'menu'].map((tab) => (
                       <motion.button
@@ -403,7 +440,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="mt-4"
+                  className="mt-2"
                 >
                   {photosToShow && photosToShow.length > 0 ? (
                     <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1">
@@ -417,14 +454,28 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.97 }}
                         >
-                          <Image
-                            src={photo}
-                            alt={`${location.name} ${activeTab} ${index + 1}`}
-                            layout="fill"
-                            objectFit="cover"
-                            className="cursor-pointer hover:opacity-90 transition-opacity duration-300"
-                            onClick={() => handleImageClick(photo, index)}
-                          />
+                          <div className="relative w-full h-full">
+                            {photo && photo.trim() !== '' ? (
+                              <Image
+                                src={photo}
+                                alt={`${location.name} ${activeTab} ${index + 1}`}
+                                layout="fill"
+                                objectFit="cover"
+                                className="cursor-pointer hover:opacity-90 transition-opacity duration-300"
+                                onClick={() => handleImageClick(photo, index)}
+                              />
+                            ) : (
+                              <Image
+                                src={
+                                  fallbackImageMap[locationKey] ||
+                                  '/images/fallback-images/siopao.png'
+                                }
+                                alt="Fallback"
+                                layout="fill"
+                                objectFit="cover"
+                              />
+                            )}
+                          </div>
                         </motion.div>
                       ))}
                     </div>

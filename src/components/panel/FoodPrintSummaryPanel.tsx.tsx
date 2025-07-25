@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { FoodPrint } from '@/types/types';
-import CloseButton from '../../components/buttons/closeButton';
-import GetDirectionsButton from '../../components/buttons/getDirectionsButton';
+import CloseButton from '@/components/buttons/closeButton';
+import GetDirectionsButton from '@/components/buttons/getDirectionsButton';
 // import { MapPin } from "lucide-react";
 
 interface FoodPrintSummaryPanelProps {
@@ -92,22 +92,18 @@ const FoodPrintSummaryPanel: React.FC<FoodPrintSummaryPanelProps> = ({
     <div
       ref={panelRef}
       className={`
-      fixed z-50 bg-white shadow-2xl overflow-hidden transition-all duration-500 ease-out
-      rounded-t-3xl h-[65vh] bottom-0 left-0 right-0 w-full
-      transform
-      ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
-  
-      md:top-0 md:bottom-0 md:left-0 md:right-auto
-      md:h-full md:w-[350px] md:min-w-[300px] md:max-w-[400px]
-      md:rounded-none md:translate-y-0
-      md:translate-x-0 md:scale-100 md:opacity-100
-      md:shadow-lg
-      ${
-        isVisible
-          ? 'md:translate-x-0 md:opacity-100'
-          : 'md:-translate-x-full md:scale-95 md:opacity-0'
-      }
-    `}
+fixed z-50 bg-white shadow-2xl overflow-hidden transition-all duration-500 ease-out
+rounded-t-3xl h-[65vh] bottom-0 left-0 right-0 w-full
+transform
+${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
+
+md:top-0 md:bottom-0 md:left-0 md:right-auto
+md:h-full md:w-[350px] md:min-w-[300px] md:max-w-[400px]
+md:rounded-none md:translate-y-0
+md:translate-x-0 md:scale-100 md:opacity-100
+md:shadow-lg
+${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale-95 md:opacity-0'}
+`}
       style={{
         transform:
           dragStartY !== null ? `translateY(${dragOffset}px)` : isVisible ? '' : 'translateY(100%)',

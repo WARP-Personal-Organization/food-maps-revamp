@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import MapComponent from '@/components/maps/MapComponent';
 import FoodPrintSummaryPanel from '@/components/panel/FoodPrintSummaryPanel.tsx';
-import LocationDetailPanel from '@/components/panel/LocationDetailPanel';
+import LocationSummaryPanel from '@/components/panel/LocationDetailPanel';
 import FilterPanel from '@/components/panel/FilterPanel';
 import ExplorePanel from '@/components/panel/ExplorePanel';
 import { FoodPrintData } from '@/data/FoodPrintData';
@@ -14,16 +14,20 @@ import { FoodPrint, Location } from '@/types/types';
 import MenuButton from '@/components/buttons/MenuButton';
 import FilterButton from '@/components/buttons/filterbutton';
 import AboutPanel from '@/components/panel/AboutPanel';
+import HomePanel from './HomePanel';
+import HomeButton from '../buttons/HomeButton';
 
 const MapPage = () => {
   const [loading, setLoading] = useState(true);
   const [showExplorePanel, setShowExplorePanel] = useState(false);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [selectedLocationKey, setSelectedLocationKey] = useState<string>('Siopao'); // Default fallback
 
   const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [showHomePanel, setShowHomePanel] = useState(false);
 
   const [showFoodPrintPanel, setShowFoodPrintPanel] = useState(false);
   const [showLocationPanel, setShowLocationPanel] = useState(false);
@@ -43,8 +47,13 @@ const MapPage = () => {
     setShowFilterPanel(false);
     setIsMenuVisible(false);
     setIsAboutVisible(false);
+    setShowHomePanel(false);
   };
-
+  const handleFilterFromHome = (filters: string[]) => {
+    setSelectedDishes(filters);
+    setShowHomePanel(false);
+    if (!isMobile) setShowExplorePanel(true);
+  };
   const filteredLocations =
     selectedDishes.length === 0
       ? []
@@ -78,8 +87,9 @@ const MapPage = () => {
           setIsMenuVisible(true);
         }}
       />
-      <LocationDetailPanel
+      <LocationSummaryPanel
         location={selectedLocation}
+        locationKey={selectedLocationKey}
         isVisible={showLocationPanel}
         onClose={() => {
           setShowLocationPanel(false);
@@ -104,11 +114,30 @@ const MapPage = () => {
         }}
       />
 
-      <FilterButton
-        onClick={() => {
+      <div className="fixed top-6 left-4 z-30 flex flex-col gap-4">
+        {isMobile && (
+          <HomeButton
+            onClick={() => {
+              setShowHomePanel(true);
+            }}
+          />
+        )}
+        <FilterButton
+          onClick={() => {
+            closeAllPanels();
+            setShowFilterPanel(true);
+          }}
+        />
+      </div>
+
+      <HomePanel
+        dishes={DishData}
+        isVisible={showHomePanel}
+        openMenu={() => {
           closeAllPanels();
-          setShowFilterPanel(true);
         }}
+        onClose={() => setShowHomePanel(false)}
+        onFilterApply={handleFilterFromHome}
       />
 
       {loading && (
@@ -117,18 +146,17 @@ const MapPage = () => {
         </div>
       )}
 
-
-<ExplorePanel
-  activeFilters={selectedDishes}
-  isVisible={!isMobile && showExplorePanel}
-  onClose={() => setShowExplorePanel(false)}
-  onFilterChange={(filters) => {
-    setSelectedDishes(filters);
-    if (filters.length === 0) {
-      setShowExplorePanel(false);
-    }
-  }}
-/>
+      <ExplorePanel
+        activeFilters={selectedDishes}
+        isVisible={!isMobile && showExplorePanel}
+        onClose={() => setShowExplorePanel(false)}
+        onFilterChange={(filters) => {
+          setSelectedDishes(filters);
+          if (filters.length === 0) {
+            setShowExplorePanel(false);
+          }
+        }}
+      />
 
       <MenuPanel
         isVisible={isMenuVisible}
