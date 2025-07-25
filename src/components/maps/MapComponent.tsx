@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../../../styles/map.css';
+import { applySelectedStyle, applyDimmedStyle, applyDefaultStyle } from '@/data/markerStyles';
 import { FoodPrint, Location, District } from '@/types/types';
 
 interface MapComponentProps {
@@ -66,6 +67,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const popupRef = useRef<mapboxgl.Popup | null>(null);
   const mapInitializedRef = useRef<boolean>(false);
+  const selectedMarkerIdRef = useRef<string | null>(null);
   // Store dynamic dependencies in refs to avoid re-renders
 
   const customMapSourceId = useMemo(() => 'custom-map-layer', []);
@@ -93,7 +95,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     iconUrl: string,
     type: 'location' | 'foodprint'
   ): HTMLDivElement => {
-    console.log('Marker clicked'); // ✅ Only this
+    console.log('Marker clicked');
     const el = document.createElement('div');
     el.className = `custom-marker ${type}-marker`;
     el.setAttribute('data-marker-id', id);
@@ -108,16 +110,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
     img.alt = name;
     img.style.width = '36px';
     img.style.height = 'auto';
-    img.style.pointerEvents = 'none'; // 👈 VERY IMPORTANT
+    img.style.pointerEvents = 'auto';
     img.style.filter = 'drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.4))';
     img.style.transition = 'all 0.3s ease';
-
+    el.style.touchAction = 'manipulation';
     iconWrapper.appendChild(img);
     el.appendChild(iconWrapper);
 
     return el;
   };
+  const updateMarkerStyles = (selectedId: string | null) => {
+    markersRef.current.forEach((marker) => {
+      const el = marker.getElement();
+      const markerId = el.getAttribute('data-marker-id');
+      const img = el.querySelector('img') as HTMLImageElement;
+      if (!img || !markerId) return;
 
+      if (selectedId === markerId) {
+        applySelectedStyle(img);
+      } else if (selectedId) {
+        applyDimmedStyle(img);
+      } else {
+        applyDefaultStyle(img);
+      }
+    });
+  };
+  updateMarkerStyles(selectedMarkerIdRef.current);
   const getImageCoordinates = (
     mapBounds: [[number, number], [number, number]]
   ): [number, number][] => {
@@ -191,6 +209,22 @@ const MapComponent: React.FC<MapComponentProps> = ({
       //   [sw.lng - lngPad, sw.lat - latPad],
       //   [ne.lng + lngPad, ne.lat + latPad]
       // );
+      const updateMarkerStyles = (selectedId: string | null) => {
+        markersRef.current.forEach((marker) => {
+          const el = marker.getElement();
+          const markerId = el.getAttribute('data-marker-id');
+          const img = el.querySelector('img') as HTMLImageElement;
+          if (!img || !markerId) return;
+
+          if (selectedId === markerId) {
+            applySelectedStyle(img);
+          } else if (selectedId) {
+            applyDimmedStyle(img);
+          } else {
+            applyDefaultStyle(img);
+          }
+        });
+      };
 
       locations.forEach((loc) => {
         if (!isValidCoord(loc)) return;
@@ -204,8 +238,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           popupRef.current?.remove();
+          selectedMarkerIdRef.current = id;
+          updateMarkerStyles(id);
           onLocationClick?.(loc);
         });
+
         const [lng, lat] = xyToLngLat(loc.x, loc.y, mapBounds);
         const marker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
         markersRef.current.push(marker);
@@ -220,10 +257,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
           fp.iconUrl || fallbackImage('foodprint'),
           'foodprint'
         );
+
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           popupRef.current?.remove();
           onFoodPrintClick?.(fp);
+          selectedMarkerIdRef.current = id;
+          updateMarkerStyles(id);
         });
         const [lng, lat] = xyToLngLat(fp.x, fp.y, mapBounds);
         const marker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
@@ -232,13 +272,20 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
       districts.forEach((d) => {
         if (!isValidCoord(d)) return;
+
         const el = document.createElement('div');
         el.className = 'custom-marker area-label-marker';
-        const fontSize = isDesktop ? 'text-3xl' : 'text-base';
+
+        // Use Tailwind responsive classes for font size
+        const fontSize = 'text-sm sm:text-base md:text-lg lg:text-xl';
 
         el.innerHTML = `
- <span class="font-[500] ${fontSize} text-white text-center opacity-80 select-none" style="font-family: 'Open Sans', sans-serif;">${d.name}</span>
-  `;
+          <span class="font-[500] ${fontSize} text-white text-center opacity-80 select-none"
+            style="font-family: 'Open Sans', sans-serif;">
+            ${d.name}
+          </span>
+        `;
+
         const [lng, lat] = xyToLngLat(d.x, d.y, mapBounds);
         const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
           .setLngLat([lng, lat])

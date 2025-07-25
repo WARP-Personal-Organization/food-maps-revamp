@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Dish } from "@/types/types";
-import CloseButton from "../../components/buttons/closeButton"
-import { Search, Filter, X } from "lucide-react";
-
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { Dish } from '@/types/types';
+import CloseButton from '../../components/buttons/closeButton';
+import { Search, Filter, X } from 'lucide-react';
 
 interface FilterPanelProps {
   dishData: Dish[];
@@ -22,7 +21,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onClose,
   onFilterApply,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedDishes, setSelectedDishes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -33,9 +32,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   const handleToggleDishSelection = (dish: string) => {
     setSelectedDishes((prev) =>
-      prev.includes(dish)
-        ? prev.filter((item) => item !== dish)
-        : [...prev, dish]
+      prev.includes(dish) ? prev.filter((item) => item !== dish) : [...prev, dish]
     );
   };
 
@@ -53,18 +50,17 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       {/* Enhanced blurred background */}
 
       {/* Filter Panel */}
-     {isVisible && (
-  <div
-    className="fixed inset-0 bg-black/40 backdrop-blur-md z-40 transition-opacity duration-300"
-    onClick={onClose}
-  />
-)}
+      {isVisible && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-md z-40 transition-opacity duration-300"
+          onClick={onClose}
+        />
+      )}
 
-<div
-  className={`fixed top-0 left-0 h-full w-full md:w-[400px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-out
-    ${isVisible ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"} flex flex-col`}
->
-
+      <div
+        className={`fixed top-0 left-0 h-full w-full md:w-[400px] bg-white shadow-2xl z-50 transform transition-all duration-500 ease-out
+    ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} flex flex-col`}
+      >
         {/* Enhanced Header */}
         <div className="bg-gradient-to-r p-4 sm:p-6">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -73,15 +69,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                 <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl font-black text-gray-900">
-                  Filter Dishes
-                </h2>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  Find your favorites
-                </p>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900">Filter Dishes</h2>
+                <p className="text-xs sm:text-sm text-gray-600">Find your favorites</p>
               </div>
             </div>
-         <CloseButton
+            <CloseButton
               onClick={onClose}
               className="p-2 hover:bg-white/80 rounded-full transition-all duration-300 shadow-sm touch-manipulation"
             />
@@ -91,9 +83,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <div className="bg-white rounded-xl p-3 shadow-sm">
             <div className="flex justify-between items-center">
               <div className="text-center flex-1">
-                <p className="text-base sm:text-lg font-bold text-gray-900">
-                  {dishData.length}
-                </p>
+                <p className="text-base sm:text-lg font-bold text-gray-900">{dishData.length}</p>
                 <p className="text-xs text-gray-600">Total Dishes</p>
               </div>
               <div className="w-px h-6 sm:h-8 bg-gray-200"></div>
@@ -123,7 +113,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             </div>
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm("")}
+                onClick={() => setSearchTerm('')}
                 className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-full transition-colors duration-300 touch-manipulation"
               >
                 <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
@@ -135,7 +125,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           {searchTerm && (
             <p className="text-xs sm:text-sm text-gray-600 mt-2 ml-1">
               {filteredDishes.length} dish
-              {filteredDishes.length !== 1 ? "es" : ""} found
+              {filteredDishes.length !== 1 ? 'es' : ''} found
             </p>
           )}
         </div>
@@ -151,8 +141,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   key={dish.name}
                   className={`group relative border-2 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg touch-manipulation ${
                     isSelected
-                      ? "border-yellow-400 shadow-lg ring-2 ring-yellow-100"
-                      : "border-gray-200 hover:border-yellow-300"
+                      ? 'border-yellow-400 shadow-lg ring-2 ring-yellow-100'
+                      : 'border-gray-200 hover:border-yellow-300'
                   }`}
                   onClick={() => handleToggleDishSelection(dish.name)}
                 >
@@ -191,18 +181,16 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   {/* Compact Info Section */}
                   <div
                     className={`p-2 sm:p-3 transition-all duration-300 ${
-                      isSelected
-                        ? "bg-yellow-50"
-                        : "bg-white group-hover:bg-gray-50"
+                      isSelected ? 'bg-yellow-50' : 'bg-white group-hover:bg-gray-50'
                     }`}
                   >
                     <h3 className="font-bold text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1 leading-tight">
-                      {(dish.name)}
+                      {dish.name}
                     </h3>
                     <div className="flex items-center justify-between flex-wrap gap-1">
                       <p className="text-gray-600 text-xs">
                         {dish.locations?.length || 0} Location
-                        {(dish.locations?.length || 0) !== 1 ? "s" : ""}
+                        {(dish.locations?.length || 0) !== 1 ? 's' : ''}
                       </p>
                       {isSelected && (
                         <span className="text-yellow-600 text-xs font-semibold px-1.5 py-0.5 bg-yellow-100 rounded-full">
@@ -222,16 +210,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                 <Search className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
-                No dishes found
-              </h3>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">No dishes found</h3>
               <p className="text-gray-600 text-sm leading-relaxed max-w-sm">
-                Try adjusting your search term or browse all available dishes to
-                find what you&apos;re craving.
+                Try adjusting your search term or browse all available dishes to find what
+                you&apos;re craving.
               </p>
               {searchTerm && (
                 <button
-                  onClick={() => setSearchTerm("")}
+                  onClick={() => setSearchTerm('')}
                   className="mt-4 text-yellow-600 hover:text-yellow-700 font-medium transition-colors duration-300 py-2 px-4 touch-manipulation"
                 >
                   Clear search
@@ -246,20 +232,24 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           <button
             className={`w-full font-black py-4 sm:py-4 rounded-xl shadow-lg transition-all duration-300 text-sm sm:text-base touch-manipulation ${
               selectedDishes.length > 0
-                ? "bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
-                : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
             }`}
             onClick={applyFilters}
             disabled={selectedDishes.length === 0}
           >
             {selectedDishes.length === 0
-              ? "Select dishes to filter"
+              ? 'Select dishes to filter'
               : `Apply Filter (${selectedDishes.length} selected)`}
           </button>
 
           {selectedDishes.length > 0 && (
             <button
-              onClick={() => setSelectedDishes([])}
+              onClick={() => {
+                setSelectedDishes([]);
+                onFilterApply([]);
+                onClose();
+              }}
               className="w-full mt-3 font-black py-4 rounded-xl shadow-lg transition-all duration-300 text-sm sm:text-base bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900 touch-manipulation"
             >
               Remove All Filters
