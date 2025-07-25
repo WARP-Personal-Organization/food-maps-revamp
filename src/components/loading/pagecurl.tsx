@@ -1,85 +1,128 @@
-"use client";
+'use client';
 
-import React, { memo, useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import React, { useRef, useEffect, useState } from 'react';
+import HTMLFlipBook from 'react-pageflip';
+import Image from 'next/image';
+import MapPage from '@/components/panel/Mainpage';
 
-// Client Component wrapper for map
-export const ClientOnly = ({ children }: { children: React.ReactNode }) => {
-  const [hasMounted, setHasMounted] = useState(false);
+const FlipPage = () => {
+  const bookRef = useRef<any>(null);
+  const [bookSize, setBookSize] = useState({ width: 0, height: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [loadingText, setLoadingText] = useState<string>(
+    'Cooking up something special just for you...'
+  );
 
+  // Responsive book sizing
   useEffect(() => {
-    setHasMounted(true);
+    const updateSize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 768);
+      setBookSize({ width, height });
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  if (!hasMounted) {
-    return (
-      <div
-        className="h-full w-full flex items-center justify-center"
-        style={{ backgroundColor: "#3b3b3f" }}
-      >
-        <p className="text-white">Loading map...</p>
-      </div>
-    );
-  }
+  // Simulate loading and auto flip page
+  useEffect(() => {
+    const loadingTimer = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(loadingTimer);
+          // After loading, trigger flip
+          setTimeout(() => {
+            bookRef.current?.pageFlip()?.flipNext();
+          }, 500);
+        }
+        return Math.min(prev + 1, 100);
+      });
+    }, 25);
 
-  return <>{children}</>;
+    return () => clearInterval(loadingTimer);
+  }, []);
+
+  // Text transition
+  useEffect(() => {
+    const textSequences: string[] = [
+      'Serving in 3, 2, 1...',
+      'Finding food spots...',
+      'Mapping delicious locations...',
+      'Almost ready...',
+      'Cooking up something special just for you...',
+    ];
+    const textIndex = Math.floor((loadingProgress / 250) * textSequences.length);
+    setLoadingText(textSequences[Math.min(textIndex, textSequences.length - 1)]);
+  }, [loadingProgress]);
+
+  return (
+    <div className="relative w-full h-full bg-white z-40 overflow-hidden">
+      <HTMLFlipBook
+        ref={bookRef}
+        swipeDistance={1}
+        showPageCorners={false}
+        disableFlipByClick={true}
+        width={bookSize.width}
+        height={bookSize.height}
+        size="fixed"
+        minWidth={320}
+        maxWidth={1920}
+        minHeight={500}
+        maxHeight={2000}
+        startPage={0}
+        flippingTime={1000}
+        drawShadow={false}
+        showCover={false}
+        mobileScrollSupport={false}
+        usePortrait={true}
+        useMouseEvents={true}
+        startZIndex={0}
+        autoSize={true}
+        maxShadowOpacity={0.5}
+        clickEventForward={true}
+        className="z-10"
+        style={{ width: '100%', height: '100%' }}
+      >
+        {/* Page 1 - Loading screen */}
+        <div className="fixed inset-0 z-40 overflow-hidden bg-white">
+          {/* Background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/images/DGBG.png')" }}
+          />
+
+          {/* Logo */}
+          <div className="absolute top-[7%] left-1/2 transform -translate-x-1/2 z-10 w-40 md:w-48">
+            <Image
+              src="/images/DGLogo.png"
+              alt="Daily Guardian Logo"
+              layout="responsive"
+              width={180}
+              height={60}
+              objectFit="contain"
+              priority
+            />
+          </div>
+
+          {/* Main content */}
+       
+
+          <div className="absolute bottom-[15%] w-full flex flex-col items-center z-10">
+            <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mb-2" />
+            <p className="text-black text-sm">{loadingText}</p>
+          </div>
+        </div>
+
+        <div className="w-full h-full bg-white flex items-center justify-center text-2xl font-bold text-black">
+          <MapPage />
+        </div>
+      </HTMLFlipBook>
+    </div>
+  );
 };
 
-// Dynamically import the Map component to avoid SSR issues with Mapbox
-// Using a stable key and memoization to prevent re-renders
-const DynamicMapComponent = dynamic(
-  () => import("@/components/maps/MapComponent"),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        className="h-full w-full flex items-center justify-center"
-        style={{ backgroundColor: "#3b3b3f" }}
-      >
-        <p className="text-white">Loading map...</p>
-      </div>
-    ),
-  }
-);
-
-// Create a memoized version of the component to prevent unnecessary re-renders
-export const MapComponent = memo(
-  DynamicMapComponent,
-  (prevProps, nextProps) => {
-    // Simple comparison that just checks for equality in the mapImageUrl and defaultZoom
-    // All other logic is handled internally by FixedMapComponent
-    return (
-      prevProps.mapImageUrl === nextProps.mapImageUrl &&
-      prevProps.defaultZoom === nextProps.defaultZoom &&
-      prevProps.useCustomMap === nextProps.useCustomMap
-    );
-  }
-);
-
-// Empty state component to show when no dishes are selected
-export const EmptyState = () => (
-  <div
-    className="h-full w-full flex flex-col items-center justify-center"
-    style={{ backgroundColor: "#3b3b3f" }}
-  >
-    <svg
-      className="w-16 h-16 text-gray-400 mb-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-      />
-    </svg>
-    <h3 className="text-xl font-medium text-white mb-2">No dishes selected</h3>
-    <p className="text-gray-300 text-center max-w-xs">
-      Please select at least one dish from the filter above to view locations on
-      the map.
-    </p>
-  </div>
-);
+export default FlipPage;

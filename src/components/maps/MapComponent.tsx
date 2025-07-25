@@ -393,7 +393,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     updateMarkers(mapInstanceRef.current);
   }, [locations, foodPrintMarkers, districts, updateMarkers]);
 
-  useEffect(() => {}, [locations, foodPrintMarkers]);
+
 
   return <div ref={mapContainerRef} className="map-container w-full h-full" />;
 };

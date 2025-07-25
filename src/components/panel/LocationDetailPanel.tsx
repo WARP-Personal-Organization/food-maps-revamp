@@ -129,11 +129,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     <>
       {/* Overlay to block map interaction when panel is open */}
       {isVisible && (
-        <div
-          className="fixed inset-0 z-40 bg-transparent"
-          style={{ pointerEvents: 'auto' }}
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 z-40 bg-transparent pointer-events-none" aria-hidden="true" /> 
       )}
       <AnimatePresence mode="wait">
         {isVisible && (
