@@ -140,11 +140,11 @@ const MapPage = () => {
         onFilterApply={handleFilterFromHome}
       />
 
-      {loading && (
+      {/* {loading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60">
           <p className="text-white text-lg animate-pulse">Loading map…</p>
         </div>
-      )}
+      )} */}
 
       <ExplorePanel
         activeFilters={selectedDishes}
@@ -192,6 +192,7 @@ const MapPage = () => {
         }}
         mapStyle="mapbox://styles/mapbox/light-v10"
         onMapLoaded={() => setLoading(false)}
+        onAboutClick={()=>setIsAboutVisible(true)}
       />
     </div>
   );

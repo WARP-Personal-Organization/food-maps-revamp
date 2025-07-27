@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import Image from "next/image";
-import CloseButton from "../buttons/closeButton";
+import React from 'react';
+import Image from 'next/image';
+import CloseButton from '../buttons/closeButton';
 
 interface MenuPanelProps {
   onClose: () => void;
@@ -11,30 +11,20 @@ interface MenuPanelProps {
   isVisible: boolean;
 }
 
-const MenuPanel: React.FC<MenuPanelProps> = ({
-  onClose,
-  onOpenHome,
-  onOpenAbout,
-  isVisible,
-}) => {
+const MenuPanel: React.FC<MenuPanelProps> = ({ onClose, onOpenHome, onOpenAbout, isVisible }) => {
   const handleHomeClick = () => {
     onOpenHome();
   };
 
   return (
     <div
-      className={`fixed top-0 right-0 w-1/4 h-full bg-white shadow-lg z-40 transition-transform duration-300 ${
-        isVisible ? "translate-x-0" : "translate-x-full"
+      className={`fixed top-0 right-0 w-5/6 md:w-3/4 h-full bg-white shadow-lg z-40 transition-transform duration-300 ${
+        isVisible ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
       <div className="p-6 h-full flex flex-col">
         <div className="flex justify-between items-center mb-8">
-          <Image
-            src="/images/foodprints-logo-menu.png"
-            alt="Logo"
-            width={100}
-            height={110}
-          />
+          <Image src="/images/foodprints-logo-menu.png" alt="Logo" width={100} height={110} />
           <CloseButton
             onClick={onClose}
             className="p-2 hover:bg-white/80 rounded-full transition-all duration-300 shadow-sm touch-manipulation"
