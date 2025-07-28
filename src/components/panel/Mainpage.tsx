@@ -1,32 +1,35 @@
-'use client';
+"use client";
 
-import React, { useMemo, useState } from 'react';
-import MapComponent from '@/components/maps/MapComponent';
-import FoodPrintSummaryPanel from '@/components/panel/FoodPrintSummaryPanel.tsx';
-import LocationSummaryPanel from '@/components/panel/LocationDetailPanel';
-import FilterPanel from '@/components/panel/FilterPanel';
-import ExplorePanel from '@/components/panel/ExplorePanel';
-import { FoodPrintData } from '@/data/FoodPrintData';
-import { DishData } from '@/data/dish';
-import { districts } from '@/data/DistrictCoordinatesData';
-import MenuPanel from '@/components/panel/MenuPanel';
-import { FoodPrint, Location } from '@/types/types';
-import MenuButton from '@/components/buttons/MenuButton';
-import FilterButton from '@/components/buttons/filterbutton';
-import AboutPanel from '@/components/panel/AboutPanel';
-import HomePanel from './HomePanel';
-import HomeButton from '../buttons/HomeButton';
+import React, { useMemo, useState } from "react";
+import MapComponent from "@/components/maps/MapComponent";
+import FoodPrintSummaryPanel from "@/components/panel/FoodPrintSummaryPanel.tsx";
+import LocationSummaryPanel from "@/components/panel/LocationDetailPanel";
+import FilterPanel from "@/components/panel/FilterPanel";
+import ExplorePanel from "@/components/panel/ExplorePanel";
+import { FoodPrintData } from "@/data/FoodPrintData";
+import { DishData } from "@/data/dish";
+import { districts } from "@/data/DistrictCoordinatesData";
+import MenuPanel from "@/components/panel/MenuPanel";
+import { FoodPrint, Location } from "@/types/types";
+import MenuButton from "@/components/buttons/MenuButton";
+import FilterButton from "@/components/buttons/filterbutton";
+import AboutPanel from "@/components/panel/AboutPanel";
+import HomePanel from "./HomePanel";
+import HomeButton from "../buttons/HomeButton";
 
 const MapPage = () => {
-  const [loading, setLoading] = useState(true);
   const [showExplorePanel, setShowExplorePanel] = useState(false);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [selectedLocationKey, setSelectedLocationKey] = useState<string>('Siopao'); // Default fallback
+  const [selectedLocationKey, setSelectedLocationKey] = useState<string>("");
 
-  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(
+    null
+  );
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null
+  );
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const [showHomePanel, setShowHomePanel] = useState(false);
 
   const [showFoodPrintPanel, setShowFoodPrintPanel] = useState(false);
@@ -70,6 +73,16 @@ const MapPage = () => {
     return allFoodPrints.filter((fp) => selectedDishes.includes(fp.dishType));
   }, [selectedDishes]);
 
+  // Function to find the dish type for a location
+  const findDishTypeForLocation = (loc: Location): string => {
+    for (const dish of DishData) {
+      if (dish.locations.some((l) => l.name === loc.name)) {
+        return dish.name;
+      }
+    }
+    return "Siopao"; // Default fallback
+  };
+
   return (
     <div className="relative h-screen w-full">
       <FoodPrintSummaryPanel
@@ -80,7 +93,10 @@ const MapPage = () => {
           setSelectedFoodPrint(null);
         }}
       />
-      <AboutPanel isVisible={isAboutVisible} onClose={() => setIsAboutVisible(false)} />
+      <AboutPanel
+        isVisible={isAboutVisible}
+        onClose={() => setIsAboutVisible(false)}
+      />
       <MenuButton
         onClick={() => {
           closeAllPanels();
@@ -96,7 +112,7 @@ const MapPage = () => {
           setSelectedLocation(null);
         }}
         onViewDetails={() => {
-          console.log('TODO: navigate to full location page');
+          console.log("TODO: navigate to full location page");
         }}
       />
       <FilterPanel
@@ -110,7 +126,7 @@ const MapPage = () => {
           if (!isMobile) {
             setShowExplorePanel(true);
           }
-          console.log('Applied Filters:', filters);
+          console.log("Applied Filters:", filters);
         }}
       />
 
@@ -163,7 +179,7 @@ const MapPage = () => {
         onClose={() => setIsMenuVisible(false)}
         onOpenHome={() => {
           closeAllPanels();
-          console.log('Home clicked');
+          console.log("Home clicked");
         }}
         onOpenAbout={() => {
           closeAllPanels();
@@ -188,11 +204,12 @@ const MapPage = () => {
         onLocationClick={(loc) => {
           closeAllPanels();
           setSelectedLocation(loc);
+          setSelectedLocationKey(findDishTypeForLocation(loc));
           setShowLocationPanel(true);
         }}
         mapStyle="mapbox://styles/mapbox/light-v10"
-        onMapLoaded={() => setLoading(false)}
-        onAboutClick={()=>setIsAboutVisible(true)}
+        onMapLoaded={() => {}}
+        onAboutClick={() => setIsAboutVisible(true)}
       />
     </div>
   );
