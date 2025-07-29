@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
-import Image from 'next/image';
-import { FoodPrint } from '@/types/types';
-import CloseButton from '@/components/buttons/closeButton';
-import GetDirectionsButton from '@/components/buttons/getDirectionsButton';
+import React, { useRef, useState } from "react";
+import Image from "next/image";
+import { FoodPrint } from "@/types/types";
+import CloseButton from "@/components/buttons/closeButton";
+import GetDirectionsButton from "@/components/buttons/getDirectionsButton";
 // import { MapPin } from "lucide-react";
 
 interface FoodPrintSummaryPanelProps {
@@ -31,22 +31,24 @@ const FoodPrintSummaryPanel: React.FC<FoodPrintSummaryPanelProps> = ({
   if (!selectedFoodPrint) return null;
 
   const imageUrl = selectedFoodPrint.heroImage;
-  const mapLink = selectedFoodPrint.mapLink || '';
+  const mapLink = selectedFoodPrint.mapLink || "";
 
   // Touch/mouse event handlers
   const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
-    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    const clientY =
+      "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     setDragStartY(clientY);
     setDragOffset(0);
     setLastDragTime(Date.now());
     setLastDragY(clientY);
     setJustDragged(false);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const handleDragMove = (e: React.TouchEvent | React.MouseEvent) => {
     if (dragStartY === null) return;
-    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    const clientY =
+      "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     const offset = Math.max(0, clientY - dragStartY);
     setDragOffset(offset);
     setLastDragTime(Date.now());
@@ -54,12 +56,15 @@ const FoodPrintSummaryPanel: React.FC<FoodPrintSummaryPanelProps> = ({
   };
 
   const handleDragEnd = () => {
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
     if (dragStartY !== null && lastDragY !== null && lastDragTime !== null) {
       const dragDistance = lastDragY - dragStartY;
       const dragDuration = Date.now() - lastDragTime;
       const velocity = dragDistance / (dragDuration || 1); // px/ms
-      if (dragOffset > DRAG_CLOSE_THRESHOLD || velocity > VELOCITY_CLOSE_THRESHOLD) {
+      if (
+        dragOffset > DRAG_CLOSE_THRESHOLD ||
+        velocity > VELOCITY_CLOSE_THRESHOLD
+      ) {
         setDragOffset(0);
         setDragStartY(null);
         setJustDragged(true);
@@ -83,7 +88,7 @@ const FoodPrintSummaryPanel: React.FC<FoodPrintSummaryPanelProps> = ({
 
   // Keyboard accessibility for handle
   const handleHandleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
       onClose();
     }
   };
@@ -95,23 +100,31 @@ const FoodPrintSummaryPanel: React.FC<FoodPrintSummaryPanelProps> = ({
 fixed z-50 bg-white shadow-2xl overflow-hidden transition-all duration-500 ease-out
 rounded-t-3xl h-[65vh] bottom-0 left-0 right-0 w-full
 transform
-${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
+${isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
 
 md:top-0 md:bottom-0 md:left-0 md:right-auto
 md:h-full md:w-[350px] md:min-w-[300px] md:max-w-[400px]
 md:rounded-none md:translate-y-0
 md:translate-x-0 md:scale-100 md:opacity-100
 md:shadow-lg
-${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale-95 md:opacity-0'}
+${
+  isVisible
+    ? "md:translate-x-0 md:opacity-100"
+    : "md:-translate-x-full md:scale-95 md:opacity-0"
+}
 `}
       style={{
         transform:
-          dragStartY !== null ? `translateY(${dragOffset}px)` : isVisible ? '' : 'translateY(100%)',
+          dragStartY !== null
+            ? `translateY(${dragOffset}px)`
+            : isVisible
+            ? ""
+            : "translateY(100%)",
         transition: dragStartY
-          ? 'none'
-          : 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s',
-        willChange: 'transform',
-        transformOrigin: 'left center',
+          ? "none"
+          : "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s",
+        willChange: "transform",
+        transformOrigin: "left center",
       }}
       onTouchMove={dragStartY !== null ? handleDragMove : undefined}
       onTouchEnd={dragStartY !== null ? handleDragEnd : undefined}
@@ -127,7 +140,7 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
         onMouseDown={handleDragStart}
         onClick={handleHandleClick}
         onKeyDown={handleHandleKeyDown}
-        style={{ WebkitTapHighlightColor: 'transparent' }}
+        style={{ WebkitTapHighlightColor: "transparent" }}
       />
       {/* Floating action buttons */}
       <div className="absolute top-6 right-6 z-50 flex gap-3">
@@ -140,9 +153,12 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
       {/* Scrollable content container */}
       <div className="h-full overflow-y-auto scrollbar-hide">
         {/* Hero image with enhanced styling */}
-        <div className="relative w-full flex-shrink-0" style={{ height: '45vh' }}>
+        <div
+          className="relative w-full flex-shrink-0"
+          style={{ height: "45vh" }}
+        >
           <Image
-            src={imageUrl || '/images/robertos/r1.webp'}
+            src={imageUrl || "/images/robertos/r1.webp"}
             alt={`${selectedFoodPrint.name} Image`}
             layout="fill"
             objectFit="cover"
@@ -156,14 +172,15 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
         <div className="rounded-t-3xl bg-white w-full p-6 pt-8 gap-6 z-30 relative -mt-6 flex flex-col shadow-xl">
           {/* FOODPRINT badge - keeping original yellow */}
           <div className="pt-0 pb-2">
-            <span className="inline-block bg-yellow-300 rounded-xl px-5 py-2.5 text-sm font-bold uppercase shadow-sm">
+            <span className="inline-block bg-yellow-300 text-black rounded-xl px-5 py-2.5 text-sm font-bold uppercase shadow-sm">
               FOODPRINT
             </span>
           </div>
 
           {/* Enhanced title with better typography */}
           <h1 className="text-3xl font-black text-gray-900 leading-tight -mt-2">
-            {selectedFoodPrint.name || "Roberto's Siopao: The Queen of All Siopaos in PH"}
+            {selectedFoodPrint.name ||
+              "Roberto's Siopao: The Queen of All Siopaos in PH"}
           </h1>
 
           {/* Enhanced location section */}
@@ -200,15 +217,20 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
                   </p>
                   <p className="text-gray-800 text-base leading-relaxed">
                     {selectedFoodPrint.description ||
-                      'beloved siopao spot in Iloilo known for its large size and flavorful fillings.'}
+                      "beloved siopao spot in Iloilo known for its large size and flavorful fillings."}
                   </p>
                 </div>
               </div>
             </div>
 
             {selectedFoodPrint.extendedDescription?.map((paragraph, idx) => (
-              <div key={idx} className="p-5 bg-gray-50 rounded-xl border-l-4 border-yellow-300">
-                <p className="text-gray-800 text-base leading-relaxed">{paragraph}</p>
+              <div
+                key={idx}
+                className="p-5 bg-gray-50 rounded-xl border-l-4 border-yellow-300"
+              >
+                <p className="text-gray-800 text-base leading-relaxed">
+                  {paragraph}
+                </p>
               </div>
             ))}
 
@@ -216,18 +238,20 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
               <div className="space-y-4">
                 <div className="p-5 bg-gray-50 rounded-xl border-l-4 border-yellow-300">
                   <p className="text-gray-800 text-base leading-relaxed">
-                    A must-visit spot for both locals and tourists, Roberto&apos;s has built a
-                    strong reputation over the decades for serving siopao that&apos;s packed with a
-                    rich combination of ingredients — from savory pork and chicken to Chinese
-                    sausage and hard-boiled egg.
+                    A must-visit spot for both locals and tourists,
+                    Roberto&apos;s has built a strong reputation over the
+                    decades for serving siopao that&apos;s packed with a rich
+                    combination of ingredients — from savory pork and chicken to
+                    Chinese sausage and hard-boiled egg.
                   </p>
                 </div>
 
                 <div className="p-5 bg-gray-50 rounded-xl border-l-4 border-yellow-300">
                   <p className="text-gray-800 text-base leading-relaxed">
-                    Their famous &quot;Queen Siopao&quot; stands out as the ultimate indulgence,
-                    stuffed with a hefty portion of meat, sausage, and egg, making it a satisfying
-                    meal on its own that&apos;s well worth the experience.
+                    Their famous &quot;Queen Siopao&quot; stands out as the
+                    ultimate indulgence, stuffed with a hefty portion of meat,
+                    sausage, and egg, making it a satisfying meal on its own
+                    that&apos;s well worth the experience.
                   </p>
                 </div>
               </div>
@@ -238,7 +262,7 @@ ${isVisible ? 'md:translate-x-0 md:opacity-100' : 'md:-translate-x-full md:scale
           <div className="sticky bottom-0 pt-6 pb-4 bg-gradient-to-t from-white via-white/95 to-transparent">
             <GetDirectionsButton
               className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
-              onClick={() => window.open(mapLink, '_blank')}
+              onClick={() => window.open(mapLink, "_blank")}
             />
 
             {/* Bottom handle for better UX */}

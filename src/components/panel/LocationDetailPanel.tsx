@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import ReactDOM from "react-dom";
 import { Location } from "@/types/types";
 import { MapPin, Tag } from "lucide-react";
 import GetDirectionsButton from "@/components/buttons/getDirectionsButton";
@@ -15,6 +16,162 @@ interface LocationSummaryPanelProps {
   onClose: () => void;
   onViewDetails: () => void;
 }
+
+/**
+ * EnlargedImageModal - renders the enlarged image in a portal to cover the whole screen
+ */
+type EnlargedImageModalProps = {
+  imageUrl: string;
+  onClose: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  currentIndex: number;
+  totalImages: number;
+};
+
+const EnlargedImageModal: React.FC<EnlargedImageModalProps> = ({
+  imageUrl,
+  onClose,
+  onNext,
+  onPrevious,
+  hasNext,
+  hasPrevious,
+  currentIndex,
+  totalImages,
+}) => {
+  if (typeof window === "undefined") return null;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") onClose();
+    if (e.key === "ArrowRight" && hasNext) onNext();
+    if (e.key === "ArrowLeft" && hasPrevious) onPrevious();
+  };
+
+  return ReactDOM.createPortal(
+    <motion.div
+      className="fixed inset-0 z-[9999] bg-black bg-opacity-90 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      style={{ margin: 0, padding: 0 }}
+    >
+      <motion.div
+        className="relative w-full h-full flex items-center justify-center p-4"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.8, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Main Image */}
+        <div className="relative max-w-full max-h-full">
+          <Image
+            src={imageUrl}
+            alt="Enlarged View"
+            width={1200}
+            height={800}
+            className="max-w-full max-h-full object-contain rounded-lg"
+            style={{
+              maxWidth: "95vw",
+              maxHeight: "90vh",
+              width: "auto",
+              height: "auto",
+            }}
+          />
+        </div>
+
+        {/* Navigation Buttons */}
+        {hasPrevious && (
+          <motion.button
+            onClick={onPrevious}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label="Previous image"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-800"
+            >
+              <polyline points="15,18 9,12 15,6" />
+            </svg>
+          </motion.button>
+        )}
+
+        {hasNext && (
+          <motion.button
+            onClick={onNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label="Next image"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-gray-800"
+            >
+              <polyline points="9,18 15,12 9,6" />
+            </svg>
+          </motion.button>
+        )}
+
+        {/* Close Button */}
+        <motion.button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Close enlarged view"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-gray-800"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </motion.button>
+
+        {/* Image Counter */}
+        {totalImages > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full text-white text-sm font-medium">
+            {currentIndex + 1} of {totalImages}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>,
+    document.body
+  );
+};
 
 const fallbackImageMap: Record<string, string> = {
   Siopao: "/images/fallback-images/siopao.png",
@@ -38,6 +195,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imgSrc, setImgSrc] = useState("");
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   useEffect(() => {
     if (location) {
       setImgSrc(
@@ -52,7 +210,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     }
   }, [location, locationKey]);
 
-  // Drag-to-close state and handlers (from FoodPrintSummaryPanel)
+  // Drag-to-close state and handlers for mobile
   const panelRef = useRef<HTMLDivElement>(null);
   const [dragStartY, setDragStartY] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
@@ -75,9 +233,10 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
       ? location.menuPhotos
       : location.photos;
 
-  // Navigation handlers
+  // Navigation handlers - exactly like the original
   const handleImageClick = (photo: string, index: number) => {
-    setEnlargedImage(photo.startsWith("/") ? photo : `/${photo}`);
+    const imageUrl = photo.startsWith("/") ? photo : `/${photo}`;
+    setEnlargedImage(imageUrl);
     setCurrentImageIndex(index);
   };
 
@@ -85,7 +244,8 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     if (photosToShow && currentImageIndex < photosToShow.length - 1) {
       const nextIndex = currentImageIndex + 1;
       setCurrentImageIndex(nextIndex);
-      setEnlargedImage(photosToShow[nextIndex]);
+      const nextPhoto = photosToShow[nextIndex];
+      setEnlargedImage(nextPhoto.startsWith("/") ? nextPhoto : `/${nextPhoto}`);
     }
   };
 
@@ -93,7 +253,8 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     if (photosToShow && currentImageIndex > 0) {
       const prevIndex = currentImageIndex - 1;
       setCurrentImageIndex(prevIndex);
-      setEnlargedImage(photosToShow[prevIndex]);
+      const prevPhoto = photosToShow[prevIndex];
+      setEnlargedImage(prevPhoto.startsWith("/") ? prevPhoto : `/${prevPhoto}`);
     }
   };
 
@@ -102,8 +263,10 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     setCurrentImageIndex(0);
   };
 
-  // Touch/mouse event handlers
+  // Touch/mouse event handlers for mobile drag-to-close
   const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!isMobile) return;
+
     const clientY =
       "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     setDragStartY(clientY);
@@ -115,7 +278,8 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
   };
 
   const handleDragMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (dragStartY === null) return;
+    if (!isMobile || dragStartY === null) return;
+
     const clientY =
       "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     const offset = Math.max(0, clientY - dragStartY);
@@ -125,11 +289,13 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
   };
 
   const handleDragEnd = () => {
+    if (!isMobile) return;
+
     document.body.style.overflow = "";
     if (dragStartY !== null && lastDragY !== null && lastDragTime !== null) {
       const dragDistance = lastDragY - dragStartY;
       const dragDuration = Date.now() - lastDragTime;
-      const velocity = dragDistance / (dragDuration || 1); // px/ms
+      const velocity = dragDistance / (dragDuration || 1);
       if (
         dragOffset > DRAG_CLOSE_THRESHOLD ||
         velocity > VELOCITY_CLOSE_THRESHOLD
@@ -146,8 +312,12 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     setJustDragged(true);
   };
 
-  // Prevent accidental click after drag
   const handleHandleClick = () => {
+    if (!isMobile) {
+      onClose();
+      return;
+    }
+
     if (justDragged) {
       setJustDragged(false);
       return;
@@ -155,7 +325,6 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
     onClose();
   };
 
-  // Keyboard accessibility for handle
   const handleHandleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
       onClose();
@@ -170,6 +339,25 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
           aria-hidden="true"
         />
       )}
+
+      {/* Enlarged Image Modal rendered at the top level using portal - exactly like original */}
+      <AnimatePresence>
+        {enlargedImage && photosToShow && (
+          <EnlargedImageModal
+            imageUrl={enlargedImage}
+            onClose={handleCloseModal}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            hasNext={
+              photosToShow ? currentImageIndex < photosToShow.length - 1 : false
+            }
+            hasPrevious={currentImageIndex > 0}
+            currentIndex={currentImageIndex}
+            totalImages={photosToShow.length}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         {isVisible && (
           <motion.div
@@ -216,7 +404,7 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
               opacity: isVisible ? 1 : 0,
               willChange: "transform",
             }}
-            // Drag events only on mobile
+            // Touch and mouse events for mobile drag-to-close
             onTouchStart={isMobile ? handleDragStart : undefined}
             onTouchMove={isMobile ? handleDragMove : undefined}
             onTouchEnd={isMobile ? handleDragEnd : undefined}
@@ -224,17 +412,19 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
             onMouseMove={isMobile ? handleDragMove : undefined}
             onMouseUp={isMobile ? handleDragEnd : undefined}
           >
-            {/* Elegant top handle - now interactive */}
-            <button
-              className="absolute top-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full z-50 cursor-pointer focus:outline-none"
-              aria-label="Close panel"
-              tabIndex={0}
-              onTouchStart={handleDragStart}
-              onMouseDown={handleDragStart}
-              onClick={handleHandleClick}
-              onKeyDown={handleHandleKeyDown}
-              style={{ WebkitTapHighlightColor: "transparent" }}
-            />
+            {/* Drag handle for mobile - interactive */}
+            {isMobile && (
+              <button
+                className="absolute top-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-300 rounded-full z-50 cursor-pointer focus:outline-none touch-manipulation"
+                aria-label="Drag to close panel"
+                tabIndex={0}
+                onTouchStart={handleDragStart}
+                onMouseDown={handleDragStart}
+                onClick={handleHandleClick}
+                onKeyDown={handleHandleKeyDown}
+                style={{ WebkitTapHighlightColor: "transparent" }}
+              />
+            )}
 
             {/* Floating action buttons */}
             <div className="absolute top-6 right-6 z-50 flex gap-3">
@@ -248,101 +438,6 @@ const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({
                 />
               </motion.div>
             </div>
-
-            {/* Enlarged Image Modal */}
-            <AnimatePresence>
-              {enlargedImage && photosToShow && (
-                <motion.div
-                  className="fixed inset-0 z-[60] bg-black bg-opacity-80 flex items-center justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={handleCloseModal}
-                >
-                  <motion.div
-                    className="relative w-full h-full p-4"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Image
-                      src={enlargedImage}
-                      alt="Enlarged View"
-                      layout="fill"
-                      objectFit="contain"
-                      className="rounded-2xl"
-                    />
-
-                    {/* Navigation Buttons */}
-                    {currentImageIndex > 0 && (
-                      <motion.button
-                        onClick={handlePrevious}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        aria-label="Previous image"
-                        tabIndex={0}
-                        role="button"
-                      >
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="text-gray-800"
-                        >
-                          <polyline points="15,18 9,12 15,6" />
-                        </svg>
-                      </motion.button>
-                    )}
-
-                    {photosToShow &&
-                      currentImageIndex < photosToShow.length - 1 && (
-                        <motion.button
-                          onClick={handleNext}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          aria-label="Next image"
-                          tabIndex={0}
-                          role="button"
-                        >
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="text-gray-800"
-                          >
-                            <polyline points="9,18 15,12 9,6" />
-                          </svg>
-                        </motion.button>
-                      )}
-
-                    {/* Close Button */}
-                    <motion.div
-                      onClick={handleCloseModal}
-                      className="absolute top-8 right-8 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white cursor-pointer z-50"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <CloseButton />
-                    </motion.div>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Scrollable Content */}
             <div className="h-full overflow-y-auto scrollbar-hide">
