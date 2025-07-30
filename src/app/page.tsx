@@ -67,7 +67,7 @@ const FlipPage = () => {
         <div className="flex flex-col items-center justify-center h-full z-10 px-4 space-y-4">
           <div className="w-80 h-auto md:w-[500px] lg:w-[600px]">
             <Image
-              src="/images/map/food-prints.png"
+              src="/images/map/food-prints.webp"
               alt="Foodprints Logo"
               layout="responsive"
               width={600}

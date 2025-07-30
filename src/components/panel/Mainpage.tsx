@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MapComponent from "@/components/maps/MapComponent";
 import FoodPrintSummaryPanel from "@/components/panel/FoodPrintSummaryPanel.tsx";
 import LocationSummaryPanel from "@/components/panel/LocationDetailPanel";
@@ -17,19 +17,30 @@ import AboutPanel from "@/components/panel/AboutPanel";
 import HomePanel from "./HomePanel";
 import HomeButton from "../buttons/HomeButton";
 
+// ✅ SSR-safe hook to detect mobile screen
+const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+
+  return isMobile;
+};
+
 const MapPage = () => {
+  const isMobile = useIsMobile(); // ✅ Replace typeof window
+
   const [showExplorePanel, setShowExplorePanel] = useState(false);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [selectedLocationKey, setSelectedLocationKey] = useState<string>("");
 
-  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(
-    null
-  );
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
-  );
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [showHomePanel, setShowHomePanel] = useState(false);
 
   const [showFoodPrintPanel, setShowFoodPrintPanel] = useState(false);
@@ -52,11 +63,13 @@ const MapPage = () => {
     setIsAboutVisible(false);
     setShowHomePanel(false);
   };
+
   const handleFilterFromHome = (filters: string[]) => {
     setSelectedDishes(filters);
     setShowHomePanel(false);
     if (!isMobile) setShowExplorePanel(true);
   };
+
   const filteredLocations =
     selectedDishes.length === 0
       ? []
@@ -67,20 +80,17 @@ const MapPage = () => {
 
   const filteredFoodPrints: FoodPrint[] = useMemo(() => {
     const allFoodPrints = Object.values(FoodPrintData).flat() as FoodPrint[];
-
     if (selectedDishes.length === 0) return allFoodPrints;
-
     return allFoodPrints.filter((fp) => selectedDishes.includes(fp.dishType));
   }, [selectedDishes]);
 
-  // Function to find the dish type for a location
   const findDishTypeForLocation = (loc: Location): string => {
     for (const dish of DishData) {
       if (dish.locations.some((l) => l.name === loc.name)) {
         return dish.name;
       }
     }
-    return "Siopao"; // Default fallback
+    return "Siopao";
   };
 
   return (
@@ -93,10 +103,7 @@ const MapPage = () => {
           setSelectedFoodPrint(null);
         }}
       />
-      <AboutPanel
-        isVisible={isAboutVisible}
-        onClose={() => setIsAboutVisible(false)}
-      />
+      <AboutPanel isVisible={isAboutVisible} onClose={() => setIsAboutVisible(false)} />
       <MenuButton
         onClick={() => {
           closeAllPanels();
@@ -149,18 +156,10 @@ const MapPage = () => {
       <HomePanel
         dishes={DishData}
         isVisible={showHomePanel}
-        openMenu={() => {
-          closeAllPanels();
-        }}
+        openMenu={() => closeAllPanels()}
         onClose={() => setShowHomePanel(false)}
         onFilterApply={handleFilterFromHome}
       />
-
-      {/* {loading && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60">
-          <p className="text-white text-lg animate-pulse">Loading map…</p>
-        </div>
-      )} */}
 
       <ExplorePanel
         activeFilters={selectedDishes}
@@ -168,9 +167,7 @@ const MapPage = () => {
         onClose={() => setShowExplorePanel(false)}
         onFilterChange={(filters) => {
           setSelectedDishes(filters);
-          if (filters.length === 0) {
-            setShowExplorePanel(false);
-          }
+          if (filters.length === 0) setShowExplorePanel(false);
         }}
       />
 
