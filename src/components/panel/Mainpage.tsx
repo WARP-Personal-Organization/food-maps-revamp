@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useState } from "react";
-import MapComponent from "@/components/maps/MapComponent";
-import FoodPrintSummaryPanel from "@/components/panel/FoodPrintSummaryPanel.tsx";
-import LocationSummaryPanel from "@/components/panel/LocationDetailPanel";
-import FilterPanel from "@/components/panel/FilterPanel";
-import ExplorePanel from "@/components/panel/ExplorePanel";
-import { FoodPrintData } from "@/data/FoodPrintData";
-import { DishData } from "@/data/dish";
-import { districts } from "@/data/DistrictCoordinatesData";
-import MenuPanel from "@/components/panel/MenuPanel";
-import { FoodPrint, Location } from "@/types/types";
-import MenuButton from "@/components/buttons/MenuButton";
-import FilterButton from "@/components/buttons/filterbutton";
-import AboutPanel from "@/components/panel/AboutPanel";
-import HomePanel from "./HomePanel";
-import HomeButton from "../buttons/HomeButton";
+import React, { useEffect, useMemo, useState } from 'react';
+import MapComponent from '@/components/maps/MapComponent';
+import FoodPrintSummaryPanel from '@/components/panel/FoodPrintSummaryPanel.tsx';
+import LocationSummaryPanel from '@/components/panel/LocationDetailPanel';
+import FilterPanel from '@/components/panel/FilterPanel';
+import ExplorePanel from '@/components/panel/ExplorePanel';
+import { FoodPrintData } from '@/data/FoodPrintData';
+import { DishData } from '@/data/dish';
+import { districts } from '@/data/DistrictCoordinatesData';
+import MenuPanel from '@/components/panel/MenuPanel';
+import { FoodPrint, Location } from '@/types/types';
+import MenuButton from '@/components/buttons/MenuButton';
+import FilterButton from '@/components/buttons/filterbutton';
+import AboutPanel from '@/components/panel/AboutPanel';
+import HomePanel from './HomePanel';
+import HomeButton from '../buttons/HomeButton';
 
 // ✅ SSR-safe hook to detect mobile screen
 const useIsMobile = (breakpoint = 768) => {
@@ -24,20 +24,20 @@ const useIsMobile = (breakpoint = 768) => {
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint);
     check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, [breakpoint]);
 
   return isMobile;
 };
 
-const MapPage = () => {
+const MapPage = ({ onReady }: { onReady?: () => void }) => {
   const isMobile = useIsMobile(); // ✅ Replace typeof window
 
   const [showExplorePanel, setShowExplorePanel] = useState(false);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [selectedLocationKey, setSelectedLocationKey] = useState<string>("");
+  const [selectedLocationKey, setSelectedLocationKey] = useState<string>('');
 
   const [selectedFoodPrint, setSelectedFoodPrint] = useState<FoodPrint | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
@@ -90,7 +90,7 @@ const MapPage = () => {
         return dish.name;
       }
     }
-    return "Siopao";
+    return 'Siopao';
   };
 
   return (
@@ -119,7 +119,7 @@ const MapPage = () => {
           setSelectedLocation(null);
         }}
         onViewDetails={() => {
-          console.log("TODO: navigate to full location page");
+          console.log('TODO: navigate to full location page');
         }}
       />
       <FilterPanel
@@ -133,7 +133,7 @@ const MapPage = () => {
           if (!isMobile) {
             setShowExplorePanel(true);
           }
-          console.log("Applied Filters:", filters);
+          console.log('Applied Filters:', filters);
         }}
       />
 
@@ -176,7 +176,7 @@ const MapPage = () => {
         onClose={() => setIsMenuVisible(false)}
         onOpenHome={() => {
           closeAllPanels();
-          console.log("Home clicked");
+          console.log('Home clicked');
         }}
         onOpenAbout={() => {
           closeAllPanels();
@@ -205,7 +205,9 @@ const MapPage = () => {
           setShowLocationPanel(true);
         }}
         mapStyle="mapbox://styles/mapbox/light-v10"
-        onMapLoaded={() => {}}
+        onMapLoaded={() => {
+          onReady?.(); // notify FlipPage when ready
+        }}
         onAboutClick={() => setIsAboutVisible(true)}
       />
     </div>
