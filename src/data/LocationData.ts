@@ -10,7 +10,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "8:00 AM - 5:30 PM",
       priceRange: "₱1-200",
       mapLink: "https://maps.app.goo.gl/HpyHQaVQg4quy1j8A",
-      photos: ["/images/fallback-images/siopao.png"],
+      photos: ["/images/fallback-images/siopao.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -28,7 +28,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "7:00 AM - 9:00 PM",
       priceRange: "₱1-100",
       mapLink: "https://maps.app.goo.gl/NYpxLVv9nezJ3PDZ7",
-      photos: ["/images/fallback-images/siopao.png"],
+      photos: ["/images/fallback-images/siopao.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -45,7 +45,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "6:00 AM - 10:30 PM",
       priceRange: "₱1-100",
       mapLink: "https://maps.app.goo.gl/gL74oSmnZLXBG96b8",
-      photos: ["/images/fallback-images/siopao.png"],
+      photos: ["/images/fallback-images/siopao.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -62,7 +62,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "7:00 AM - 6:00 PM",
       priceRange: "₱1-100",
       mapLink: "https://maps.app.goo.gl/4n54jRo9wFdZP7p58",
-      photos: ["/images/fallback-images/siopao.png"],
+      photos: ["/images/fallback-images/siopao.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -81,7 +81,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:30 AM - 11:00 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -98,7 +98,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "6:00 AM - 8:00 PM",
       priceRange: "₱1-200",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -116,7 +116,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 7:00 PM",
       priceRange: "₱1-200",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -134,7 +134,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "7:00 AM - 11:00 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -151,7 +151,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "10:00 AM - 9:00 PM",
       priceRange: "₱200-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -168,7 +168,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "10:00 AM - 7:30 PM",
       priceRange: "₱1-200",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/batchoy.png"],
+      photos: ["/images/fallback-images/batchoy.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -187,7 +187,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 8:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/cansi.png"],
+      photos: ["/images/fallback-images/cansi.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -205,7 +205,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "12:00 AM - 11:59 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/cansi.png"],
+      photos: ["/images/fallback-images/cansi.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -222,7 +222,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "6:00 AM - 9:00 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/cansi.png"],
+      photos: ["/images/fallback-images/cansi.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -241,7 +241,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "8:00 AM - 8:00 PM",
       priceRange: "₱200-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/kbl.png"],
+      photos: ["/images/fallback-images/kbl.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -259,7 +259,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "11:00 AM - 9:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/kbl.png"],
+      photos: ["/images/fallback-images/kbl.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -296,7 +296,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "8:30 AM - 8:00 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/pancit_molo.png"],
+      photos: ["/images/fallback-images/pancit_molo.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -313,7 +313,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 5:00 PM",
       priceRange: "₱100-300",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/pancit_molo.png"],
+      photos: ["/images/fallback-images/pancit_molo.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -330,7 +330,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "12:00 AM - 11:59 PM",
       priceRange: "₱100-400",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/pancit_molo.png"],
+      photos: ["/images/fallback-images/pancit_molo.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -350,7 +350,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "11:00 AM - 2:00 PM, 5:00 PM - 10:00 PM",
       priceRange: "₱100-600",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/inasal.png"],
+      photos: ["/images/fallback-images/inasal.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -368,7 +368,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "10:00 AM - 10:00 PM",
       priceRange: "₱100-300",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/inasal.png"],
+      photos: ["/images/fallback-images/inasal.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -385,7 +385,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "10:30 AM - 9:00 PM",
       priceRange: "₱100-600",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/inasal.png"],
+      photos: ["/images/fallback-images/inasal.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -402,7 +402,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 8:30 PM",
       priceRange: "₱100-300",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/inasal.png"],
+      photos: ["/images/fallback-images/inasal.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -421,7 +421,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "8:00 AM - 8:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -438,7 +438,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 9:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -456,7 +456,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "7:00 AM - 10:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -474,7 +474,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "9:00 AM - 9:30 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -491,7 +491,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "8:00 AM - 9:00 PM",
       priceRange: "₱100-600",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -509,7 +509,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "6:00 AM - 10:00 PM",
       priceRange: "₱100-600",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",
@@ -526,7 +526,7 @@ export const LocationData: Record<string, Location[]> = {
       openHours: "7:00 AM - 9:00 PM",
       priceRange: "₱100-800",
       mapLink: "https://maps.app.goo.gl/nc9ANGGvnH851Z8A8",
-      photos: ["/images/fallback-images/seafood.png"],
+      photos: ["/images/fallback-images/seafood.webp"],
       menuPhotos: [
         "images/menu/kbl/breakthrough/breakthrough_menu_1.jpg",
         "images/menu/kbl/breakthrough/breakthrough_menu_2.jpg",

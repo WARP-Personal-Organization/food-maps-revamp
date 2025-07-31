@@ -9,6 +9,7 @@ interface ExplorePanelProps {
   onFilterChange?: (filters: string[]) => void;
   isVisible?: boolean;
   onClose?: () => void;
+   onSelectLocation?: (location: Location) => void; 
 }
 
 const ExplorePanel: React.FC<ExplorePanelProps> = ({
@@ -16,6 +17,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
   onFilterChange,
   isVisible = false,
   onClose,
+  onSelectLocation
 }) => {
   const removeFilter = (filterName: string) => {
     onFilterChange?.(activeFilters.filter((filter) => filter !== filterName));
@@ -140,65 +142,61 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
           {filteredLocations.length > 0 ? (
             <div className="space-y-3 pt-4">
               {filteredLocations.map((location, index) => (
-                <div
-                  key={`${location.name}-${index}`}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-yellow-300 transition-all duration-300 hover:shadow-md"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                      <Image
-                        src={
-                          location.iconUrl || "/images/filter-dish/siopao.png"
-                        }
-                        alt={location.name}
-                        className="w-full h-full object-contain"
-                        fill
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-gray-900 mb-1 line-clamp-1">
-                        {location.name}
-                      </h4>
-                      <div className="flex items-center gap-1 mb-2">
-                        <MapPin className="w-3 h-3 text-gray-400" />
-                        <p className="text-xs text-gray-600 line-clamp-1">
-                          {location.address
-                            ? location.address.split(",")[0]
-                            : "Iloilo City Proper"}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-gray-500">8 min</span>
-                          <span className="text-gray-300">•</span>
-                          <span className="text-xs text-gray-500">⭐ 4.2</span>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {activeFilters
-                            .filter((filter) =>
-                              LocationData[filter]?.some(
-                                (loc) => loc.name === location.name
-                              )
-                            )
-                            .slice(0, 2)
-                            .map((tag) => (
-                              <span
-                                key={tag}
-                                className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-medium"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-yellow-100 rounded-full w-6 h-6 flex items-center justify-center">
-                      <span className="text-xs font-bold text-yellow-700">
-                        {index + 1}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div
+  onClick={() => onSelectLocation?.(location)}
+  key={`${location.name}-${index}`}
+  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-yellow-300 transition-all duration-300 hover:shadow-md w-full"
+>
+  <div className="flex items-stretch gap-3 h-full">
+    <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+      <Image
+        src={location.iconUrl || "/images/filter-dish/siopao.png"}
+        alt={location.name}
+        className="object-contain"
+        fill
+      />
+    </div>
+    <div className="flex-1 min-w-0 flex flex-col justify-between">
+      <div>
+        <h4 className="font-bold text-gray-900 mb-1 line-clamp-1">
+          {location.name}
+        </h4>
+        <div className="flex items-center gap-1 mb-2">
+          <MapPin className="w-3 h-3 text-gray-400" />
+          <p className="text-xs text-gray-600 line-clamp-1">
+            {location.address ? location.address.split(",")[0] : "Iloilo City Proper"}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-center gap-1 text-xs text-gray-500">
+          <span>8 min</span>
+          <span className="text-gray-300">•</span>
+          <span>⭐ 4.2</span>
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {activeFilters
+            .filter((filter) =>
+              LocationData[filter]?.some((loc) => loc.name === location.name)
+            )
+            .slice(0, 2)
+            .map((tag) => (
+              <span
+                key={tag}
+                className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+        </div>
+      </div>
+    </div>
+    <div className="bg-yellow-100 rounded-full w-6 h-6 flex items-center justify-center self-start">
+      <span className="text-xs font-bold text-yellow-700">{index + 1}</span>
+    </div>
+  </div>
+</div>
+
               ))}
             </div>
           ) : (
