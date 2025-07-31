@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from "react";
-import MapComponent from "@/components/maps/MapComponent";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import MapComponent, { MapComponentHandle } from "@/components/maps/MapComponent";
 import FoodPrintSummaryPanel from "@/components/panel/FoodPrintSummaryPanel.tsx";
 import LocationSummaryPanel from "@/components/panel/LocationDetailPanel";
 import FilterPanel from "@/components/panel/FilterPanel";
@@ -31,9 +31,10 @@ const useIsMobile = (breakpoint = 768) => {
   return isMobile;
 };
 
+
 const MapPage = ({ onReady }: { onReady?: () => void }) => {
   const isMobile = useIsMobile(); // ✅ Replace typeof window
-
+const mapRef = useRef<MapComponentHandle>(null);
   const [showExplorePanel, setShowExplorePanel] = useState(false);
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -112,6 +113,7 @@ const MapPage = ({ onReady }: { onReady?: () => void }) => {
       />
       <LocationSummaryPanel
         location={selectedLocation}
+          key={selectedLocation?.name} // Helps React reset internal state
         locationKey={selectedLocationKey}
         isVisible={showLocationPanel}
         onClose={() => {
@@ -174,6 +176,7 @@ const MapPage = ({ onReady }: { onReady?: () => void }) => {
     setSelectedLocation(location);
     setSelectedLocationKey(findDishTypeForLocation(location));
     setShowLocationPanel(true);
+    mapRef.current?.highlightLocationMarker(location);
   }}
 />
 
@@ -193,6 +196,7 @@ const MapPage = ({ onReady }: { onReady?: () => void }) => {
       />
 
       <MapComponent
+      ref={mapRef}
         locations={filteredLocations}
         foodPrintMarkers={filteredFoodPrints}
         districts={districts}
