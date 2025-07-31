@@ -12,7 +12,7 @@ import { districts } from "@/data/DistrictCoordinatesData";
 import MenuPanel from "@/components/panel/MenuPanel";
 import { FoodPrint, Location } from "@/types/types";
 import MenuButton from "@/components/buttons/MenuButton";
-import FilterButton from "@/components/buttons/Filterbutton";
+import FilterButton from "@/components/buttons/filterbutton";
 import AboutPanel from "@/components/panel/AboutPanel";
 import HomePanel from "./HomePanel";
 import HomeButton from "../buttons/HomeButton";
