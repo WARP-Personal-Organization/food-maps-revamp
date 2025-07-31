@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Dish } from '@/types/types';
-import CloseButton from '../../components/buttons/closeButton';
+import CloseButton from '../buttons/CloseButton';
 import { Search, Filter, X } from 'lucide-react';
 
 interface FilterPanelProps {

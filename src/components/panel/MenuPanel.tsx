@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import CloseButton from "../buttons/closeButton";
+import CloseButton from "../buttons/CloseButton";
 interface MenuPanelProps {
   onClose: () => void;
   onOpenHome: () => void;

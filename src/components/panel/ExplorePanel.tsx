@@ -1,7 +1,7 @@
 import React from "react";
 import { Location } from "@/types/types";
 import { LocationData } from "@/data/LocationData";
-import CloseButton from "../buttons/closeButton";
+import CloseButton from "../buttons/CloseButton";
 import { MapPin, Search, X, Compass } from "lucide-react";
 import Image from "next/image";
 interface ExplorePanelProps {
@@ -9,6 +9,7 @@ interface ExplorePanelProps {
   onFilterChange?: (filters: string[]) => void;
   isVisible?: boolean;
   onClose?: () => void;
+   onSelectLocation?: (location: Location) => void; 
 }
 
 const ExplorePanel: React.FC<ExplorePanelProps> = ({
@@ -16,6 +17,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
   onFilterChange,
   isVisible = false,
   onClose,
+  onSelectLocation
 }) => {
   const removeFilter = (filterName: string) => {
     onFilterChange?.(activeFilters.filter((filter) => filter !== filterName));
@@ -140,10 +142,14 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
           {filteredLocations.length > 0 ? (
             <div className="space-y-3 pt-4">
               {filteredLocations.map((location, index) => (
-                <div
-                  key={`${location.name}-${index}`}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-yellow-300 transition-all duration-300 hover:shadow-md"
-                >
+               <button
+               onClick={() => {
+    onSelectLocation?.(location); // Call the new prop
+  }}
+  key={`${location.name}-${index}`}
+  className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-yellow-300 transition-all duration-300 hover:shadow-md"
+>
+
                   <div className="flex items-start gap-3">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
                       <Image
@@ -198,7 +204,7 @@ const ExplorePanel: React.FC<ExplorePanelProps> = ({
                       </span>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           ) : (

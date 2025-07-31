@@ -12,12 +12,12 @@ import { districts } from "@/data/DistrictCoordinatesData";
 import MenuPanel from "@/components/panel/MenuPanel";
 import { FoodPrint, Location } from "@/types/types";
 import MenuButton from "@/components/buttons/MenuButton";
-import FilterButton from "@/components/buttons/filterbutton";
+import FilterButton from "@/components/buttons/Filterbutton";
 import AboutPanel from "@/components/panel/AboutPanel";
 import HomePanel from "./HomePanel";
 import HomeButton from "../buttons/HomeButton";
 
-// ✅ SSR-safe hook to detect mobile screen
+
 const useIsMobile = (breakpoint = 768) => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -161,15 +161,23 @@ const MapPage = () => {
         onFilterApply={handleFilterFromHome}
       />
 
-      <ExplorePanel
-        activeFilters={selectedDishes}
-        isVisible={!isMobile && showExplorePanel}
-        onClose={() => setShowExplorePanel(false)}
-        onFilterChange={(filters) => {
-          setSelectedDishes(filters);
-          if (filters.length === 0) setShowExplorePanel(false);
-        }}
-      />
+<ExplorePanel
+  activeFilters={selectedDishes}
+  isVisible={!isMobile && showExplorePanel}
+  onClose={() => setShowExplorePanel(false)}
+  onFilterChange={(filters) => {
+    setSelectedDishes(filters);
+    if (filters.length === 0) setShowExplorePanel(false);
+  }}
+  onSelectLocation={(location) => {
+    closeAllPanels();
+    setSelectedLocation(location);
+    setSelectedLocationKey(findDishTypeForLocation(location));
+    setShowLocationPanel(true);
+  }}
+/>
+
+
 
       <MenuPanel
         isVisible={isMenuVisible}

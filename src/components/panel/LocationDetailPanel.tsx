@@ -5,8 +5,8 @@ import Image from "next/image";
 import ReactDOM from "react-dom";
 import { Location } from "@/types/types";
 import { MapPin, Tag } from "lucide-react";
-import GetDirectionsButton from "@/components/buttons/getDirectionsButton";
-import CloseButton from "@/components/buttons/closeButton";
+import GetDirectionsButton from "@/components/buttons/GetDirectionsButton";
+import CloseButton from "@/components/buttons/CloseButton";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LocationSummaryPanelProps {

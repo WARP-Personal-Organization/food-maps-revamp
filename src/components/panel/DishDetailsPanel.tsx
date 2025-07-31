@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, MapPin, Star, Clock } from "lucide-react";
 import { Dish } from "@/types/types";
 import { LocationData } from "@/data/LocationData";
 
-import CloseButton from "../buttons/closeButton";
+import CloseButton from "../buttons/CloseButton";
 
 import { motion, AnimatePresence } from "framer-motion";
 

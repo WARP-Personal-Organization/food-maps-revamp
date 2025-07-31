@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { FoodPrint } from "@/types/types";
-import CloseButton from "@/components/buttons/closeButton";
-import GetDirectionsButton from "@/components/buttons/getDirectionsButton";
+import CloseButton from "@/components/buttons/CloseButton";
+import GetDirectionsButton from "@/components/buttons/GetDirectionsButton";
 // import { MapPin } from "lucide-react";
 
 interface FoodPrintSummaryPanelProps {
