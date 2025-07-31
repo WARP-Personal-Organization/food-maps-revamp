@@ -31,3 +31,10 @@ body {
   font-family: sans-serif;
   font-size: 1.5rem;
 }
+body {
+  background-color: #fad610; /* Tailwind's yellow-100 or close */
+  background-image: url('/images/DGBG.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

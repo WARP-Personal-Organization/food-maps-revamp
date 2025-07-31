@@ -1,21 +1,33 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import MapPage from "@/components/panel/Mainpage";
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import MapPage from '@/components/panel/Mainpage';
 
 const loadingTexts = [
-  "Serving in 3, 2, 1...",
-  "Finding food spots...",
-  "Mapping delicious locations...",
-  "Almost ready...",
-  "Cooking up something special just for you...",
+  'Serving in 3, 2, 1...',
+  'Finding food spots...',
+  'Mapping delicious locations...',
+  'Almost ready...',
+  'Cooking up something special just for you...',
 ];
 
 const FlipPage = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState(loadingTexts[0]);
   const [loading, setLoading] = useState(true);
+  const [mapReady, setMapReady] = useState(false);
+
+  useEffect(() => {
+    if (loadingProgress >= 100 && mapReady) {
+      const timer = setTimeout(() => setLoading(false), 800); // fade out
+      return () => clearTimeout(timer);
+    }
+  }, [loadingProgress, mapReady]);
+
+  const handleMapReady = () => {
+    setMapReady(true);
+  };
 
   // Simulate loading progress
   useEffect(() => {
@@ -24,7 +36,6 @@ const FlipPage = () => {
       setLoadingProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
-          setTimeout(() => setLoading(false), 800); // fade out
           return 100;
         }
         return prev + 1;
@@ -40,19 +51,21 @@ const FlipPage = () => {
   }, [loadingProgress]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-yellow-400 z-50 overflow-hidden">
+    <div
+      className="fixed inset-0 w-screen h-screen z-50 overflow-hidden"
+      style={{
+        backgroundImage: "url('/images/DGBG.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundColor: '#fff9c4', // fallback yellow
+      }}
+    >
       {/* Loading Screen */}
       <div
-        className={`absolute inset-0 flex flex-col items-center justify-center bg-white z-50 transition-opacity duration-700 ${
-          loading
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+        className={`absolute inset-0 flex flex-col items-center justify-center z-50 transition-opacity duration-700 ${
+          loading ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/DGBG.png')" }}
-        />
         <div className="absolute top-[7%] left-1/2 transform -translate-x-1/2 z-10 w-40 md:w-48">
           <Image
             src="/images/DGLogo.png"
@@ -82,15 +95,14 @@ const FlipPage = () => {
           <p className="text-black text-sm">{loadingText}</p>
         </div>
       </div>
+
       {/* Map Page */}
       <div
         className={`w-full h-full transition-opacity duration-700 ${
-          loading
-            ? "opacity-0 pointer-events-none"
-            : "opacity-100 pointer-events-auto"
+          loading ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
         }`}
       >
-        <MapPage />
+        <MapPage onReady={handleMapReady} />
       </div>
     </div>
   );
