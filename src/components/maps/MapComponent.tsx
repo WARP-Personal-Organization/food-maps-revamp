@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef,useImperativeHandle,forwardRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../../../styles/map.css";
@@ -10,7 +10,9 @@ import {
   applyDefaultStyle,
 } from "@/data/markerStyles";
 import { FoodPrint, Location, District } from "@/types/types";
-
+export interface MapComponentHandle {
+  highlightLocationMarker: (location: Location) => void;
+}
 interface MapComponentProps {
   locations: Location[];
   foodPrintMarkers?: FoodPrint[];
@@ -47,27 +49,28 @@ const xyToLngLat = (
   return [lng, lat];
 };
 
-const MapComponent: React.FC<MapComponentProps> = ({
-  onMapLoaded,
-  locations = [],
-  foodPrintMarkers = [],
-  onAboutClick,
-  districts = [],
-  mapImageUrl = "/images/map/FoodPrints-Map.webp",
-  mapBounds = [
-    [0, 0],
-    [1000, 1000],
-  ],
-  defaultZoom = 12,
-  onLocationClick,
-  onFoodPrintClick,
-  mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
-    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ||
-    "",
-  mapStyle = "mapbox://styles/mapbox/streets-v12",
-  useCustomMap = true,
-  isDesktop = false,
-}) => {
+const MapComponent = forwardRef<MapComponentHandle, MapComponentProps>((props, ref) => {
+  const {
+    onMapLoaded,
+    locations = [],
+    foodPrintMarkers = [],
+    onAboutClick,
+    districts = [],
+    mapImageUrl = "/images/map/FoodPrints-Map.webp",
+    mapBounds = [
+      [0, 0],
+      [1000, 1000],
+    ],
+    defaultZoom = 12,
+    onLocationClick,
+    onFoodPrintClick,
+    mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
+      process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ||
+      "",
+    mapStyle = "mapbox://styles/mapbox/streets-v12",
+    useCustomMap = true,
+    isDesktop = false,
+  } = props;
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -85,7 +88,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
       mapboxgl.accessToken = mapboxToken;
     }
   }, [mapboxToken]);
-
+  const highlightLocationMarker = (location: Location) => {
+    const id = `location-${location.name}-${location.x}-${location.y}`;
+    selectedMarkerIdRef.current = id;
+    updateMarkerStyles(id);
+  };
+    useImperativeHandle(ref, () => ({
+    highlightLocationMarker,
+  }));
   const isValidCoord = (point: { x: number; y: number }) =>
     typeof point.x === "number" &&
     typeof point.y === "number" &&
@@ -463,5 +473,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   }, [locations, foodPrintMarkers, districts, updateMarkers]);
 
   return <div ref={mapContainerRef} className="map-container w-full h-full" />;
-};
+});
+MapComponent.displayName = "MapComponent"; // ✅ Add this line
 export default MapComponent;

@@ -174,13 +174,13 @@ const EnlargedImageModal: React.FC<EnlargedImageModalProps> = ({
 };
 
 const fallbackImageMap: Record<string, string> = {
-  Siopao: "/images/fallback-images/siopao.png",
-  Batchoy: "/images/fallback-images/batchoy.png",
-  Cansi: "/images/fallback-images/cansi.png",
-  "Chicken Inasal": "/images/fallback-images/inasal.png",
-  KBL: "/images/fallback-images/kbl.png",
-  "Pancit Molo": "/images/fallback-images/pancit_molo.png",
-  Seafood: "/images/fallback-images/seafood.png",
+  Siopao: "/images/fallback-images/siopao.webp",
+  Batchoy: "/images/fallback-images/batchoy.webp",
+  Cansi: "/images/fallback-images/cansi.webp",
+  "Chicken Inasal": "/images/fallback-images/inasal.webp",
+  KBL: "/images/fallback-images/kbl.webp",
+  "Pancit Molo": "/images/fallback-images/pancit_molo.webp",
+  Seafood: "/images/fallback-images/seafood.webp",
 };
 
 const LocationSummaryPanel: React.FC<LocationSummaryPanelProps> = ({

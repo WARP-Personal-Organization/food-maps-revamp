@@ -12,7 +12,7 @@ const GetDirectionsButton: React.FC<GetDirectionsButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      aria-label="Get Directions"
+      aria-label="Get directions"
       className={`w-full flex items-center justify-center px-4 py-3 rounded-lg text-black bg-yellow-400 font-semibold text-sm sm:text-base shadow-md hover:bg-yellow-500 transition duration-200 ${className}`}
     >
       <svg

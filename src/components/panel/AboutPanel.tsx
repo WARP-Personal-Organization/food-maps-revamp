@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Target, Users } from 'lucide-react';
-import CloseButton from '../../components/buttons/closeButton'
+import CloseButton from '../buttons/closeButton'
 
 interface AboutPanelProps {
   onClose: () => void;

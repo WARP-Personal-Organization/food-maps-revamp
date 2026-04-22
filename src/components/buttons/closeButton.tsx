@@ -12,7 +12,7 @@ interface CloseButtonProps {
 const CloseButton: React.FC<CloseButtonProps> = ({ onClick, className = "", ariaLabel = "Close" }) => {
   return (
     <button
-      onClick={onClick}
+      onClick={onClick} 
       className={`text-2xl rounded p-2 text-black bg-[#ebebeb] ${className}rounded-full`}
       aria-label={ariaLabel}
     >
